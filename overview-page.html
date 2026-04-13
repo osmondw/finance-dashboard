@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Monthly Report Analysis - The Fluid Architect</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#006565",
+                        "on-tertiary-container": "#fff8f6",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#c6e9e9",
+                        "surface-container-high": "#ccefee",
+                        "primary-container": "#008080",
+                        "surface-container": "#d2f5f4",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#380c00",
+                        "on-primary-container": "#e3fffe",
+                        "tertiary-fixed": "#ffdbcf",
+                        "tertiary-container": "#bf5025",
+                        "inverse-primary": "#76d6d5",
+                        "inverse-surface": "#143535",
+                        "inverse-on-surface": "#d4f8f7",
+                        "surface-container-highest": "#c6e9e9",
+                        "background": "#e2fffe",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#e2fffe",
+                        "on-surface-variant": "#3e4949",
+                        "secondary": "#446464",
+                        "on-tertiary-fixed-variant": "#822800",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#9e380d",
+                        "secondary-fixed": "#c6e9e9",
+                        "on-secondary-fixed": "#002020",
+                        "on-secondary-container": "#4a6a6a",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "primary-fixed-dim": "#76d6d5",
+                        "secondary-fixed-dim": "#abcdcd",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#93f2f2",
+                        "surface-dim": "#bee1e0",
+                        "surface-bright": "#e2fffe",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#ffb59c",
+                        "on-surface": "#002020",
+                        "on-secondary-fixed-variant": "#2c4c4c",
+                        "surface-container-low": "#d7fafa",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-background": "#002020",
+                        "secondary-container": "#c6e9e9",
+                        "surface-tint": "#006a6a",
+                        "outline": "#6e7979",
+                        "outline-variant": "#bdc9c8",
+                        "on-primary-fixed": "#002020"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .donut-gradient {
+            background: conic-gradient(
+                #006565 0% 40%,
+                #008080 40% 65%,
+                #9e380d 65% 85%,
+                #446464 85% 100%
+            );
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 px-6 py-4 flex justify-between items-center w-full max-w-7xl mx-auto bg-[#e2fffe] dark:bg-slate-950">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden border-2 border-primary">
+<img alt="User profile" data-alt="close-up portrait of a professional woman with a minimalist aesthetic, soft studio lighting, teal color accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtxs7Wx_At8G_MRLkFBBdB2nVFYJP3fgLKznJvfcqDRJA3N76hbtxrRMB_i_HuyvG_x63YUPAvnYIB80RXmgnKYY6lffsO_IdXJjaJiNfNbYboNY72DW9XElHNh7ZavDNsCusFWuMD8mxmhE5EK2UjirYNC0Y1_qEf85jpjaqM-hEGQs1xTlFq3q0tgLWO_eBsSsnjNE_osvVGjMkO8SsQ203O8Z3pHRZYv-gUZ2YmHElkvA9CYsXzbxV8x086YYzJo77BgEoPPIQ"/>
+</div>
+<span class="text-xl font-bold tracking-tight text-[#006565] dark:text-[#008080]">The Fluid Architect</span>
+</div>
+<button class="bg-primary hover:bg-primary-container text-white px-5 py-2 rounded-full font-medium transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+<span class="text-sm">Export Report</span>
+</button>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-8">
+<!-- Month Selector & Hero Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+<div>
+<span class="text-on-surface-variant font-medium text-sm tracking-widest uppercase mb-1 block">Financial Overview</span>
+<div class="flex items-center gap-3">
+<h1 class="text-4xl font-extrabold tracking-tight text-on-background">October 2023</h1>
+<button class="p-2 rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+<div class="glass-panel p-4 rounded-xl flex items-center gap-6 border border-white/20">
+<div class="flex flex-col">
+<span class="text-xs text-on-surface-variant font-semibold">TOTAL SPENDING</span>
+<span class="text-2xl font-bold text-primary">$12,480.00</span>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant/30"></div>
+<div class="flex flex-col">
+<span class="text-xs text-on-surface-variant font-semibold">VS LAST MONTH</span>
+<span class="text-xl font-bold text-tertiary">+12.4%</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Category Analysis (Donut) -->
+<section class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-8 transition-all hover:bg-white">
+<h3 class="text-xl font-bold mb-8 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="pie_chart">pie_chart</span>
+                    Spending by Category
+                </h3>
+<div class="flex flex-col md:flex-row items-center justify-around gap-12">
+<!-- Donut Chart -->
+<div class="relative w-64 h-64 flex items-center justify-center">
+<div class="donut-gradient w-full h-full rounded-full absolute"></div>
+<div class="bg-surface-container-lowest w-44 h-44 rounded-full flex flex-col items-center justify-center z-10">
+<span class="text-on-surface-variant text-sm font-medium">Largest Slice</span>
+<span class="text-2xl font-extrabold text-primary">40%</span>
+<span class="text-xs text-on-surface-variant">Dining &amp; Food</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex flex-col gap-5 w-full md:w-auto">
+<div class="flex items-center justify-between gap-8 p-3 rounded-lg bg-primary/5 border-l-4 border-primary">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="font-bold text-on-background">Food &amp; Dining</span>
+</div>
+<span class="font-extrabold text-primary">40%</span>
+</div>
+<div class="flex items-center justify-between gap-8 p-3 rounded-lg hover:bg-slate-50">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="font-medium text-on-surface-variant">Housing</span>
+</div>
+<span class="font-bold text-on-surface">25%</span>
+</div>
+<div class="flex items-center justify-between gap-8 p-3 rounded-lg hover:bg-slate-50">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="font-medium text-on-surface-variant">Entertainment</span>
+</div>
+<span class="font-bold text-on-surface">20%</span>
+</div>
+<div class="flex items-center justify-between gap-8 p-3 rounded-lg hover:bg-slate-50">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-medium text-on-surface-variant">Other</span>
+</div>
+<span class="font-bold text-on-surface">15%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Trend Analysis Section -->
+<section class="lg:col-span-5 bg-surface-container-low rounded-xl p-8 flex flex-col justify-between">
+<div>
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-on-background">
+<span class="material-symbols-outlined text-primary" data-icon="trending_up">trending_up</span>
+                        Trend Analysis
+                    </h3>
+<p class="text-on-surface-variant text-sm mb-8 leading-relaxed">
+                        Your spending in <span class="text-primary font-bold">Food &amp; Dining</span> has increased by <span class="text-tertiary font-bold">12.4%</span> since September. Consider adjusting your weekly meal prep to stay within budget.
+                    </p>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container-lowest p-4 rounded-lg flex items-center gap-4">
+<div class="p-3 bg-tertiary/10 text-tertiary rounded-full">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<div>
+<span class="text-xs text-on-surface-variant uppercase font-bold tracking-wider">Potential Overspend</span>
+<p class="font-bold">Eating out is $420 over projection</p>
+</div>
+</div>
+<div class="bg-primary/10 p-4 rounded-lg flex items-center gap-4">
+<div class="p-3 bg-primary text-white rounded-full">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</div>
+<div>
+<span class="text-xs text-on-surface-variant uppercase font-bold tracking-wider">Savings Goal</span>
+<p class="font-bold">Utilities are 15% lower than target</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Budget vs Actual (Bars) -->
+<section class="lg:col-span-12 bg-surface-container-high rounded-xl p-8">
+<div class="flex justify-between items-end mb-10">
+<h3 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="bar_chart">bar_chart</span>
+                        Budget vs Actual
+                    </h3>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary-container"></span>
+<span class="text-xs font-semibold text-on-surface-variant">BUDGET</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs font-semibold text-on-surface-variant">ACTUAL</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-end h-64 border-b border-outline-variant/30">
+<!-- Bar Group 1 -->
+<div class="flex flex-col items-center gap-4 h-full justify-end">
+<div class="flex items-end gap-1 w-full justify-center">
+<div class="w-8 bg-primary-container rounded-t-lg transition-all hover:brightness-110" style="height: 120px;"></div>
+<div class="w-8 bg-primary rounded-t-lg transition-all hover:brightness-110" style="height: 140px;"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">Dining</span>
+</div>
+<!-- Bar Group 2 -->
+<div class="flex flex-col items-center gap-4 h-full justify-end">
+<div class="flex items-end gap-1 w-full justify-center">
+<div class="w-8 bg-primary-container rounded-t-lg" style="height: 180px;"></div>
+<div class="w-8 bg-primary rounded-t-lg" style="height: 170px;"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">Rent</span>
+</div>
+<!-- Bar Group 3 -->
+<div class="flex flex-col items-center gap-4 h-full justify-end">
+<div class="flex items-end gap-1 w-full justify-center">
+<div class="w-8 bg-primary-container rounded-t-lg" style="height: 100px;"></div>
+<div class="w-8 bg-primary rounded-t-lg" style="height: 160px;"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">Travel</span>
+</div>
+<!-- Bar Group 4 -->
+<div class="flex flex-col items-center gap-4 h-full justify-end">
+<div class="flex items-end gap-1 w-full justify-center">
+<div class="w-8 bg-primary-container rounded-t-lg" style="height: 140px;"></div>
+<div class="w-8 bg-primary rounded-t-lg" style="height: 130px;"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">Health</span>
+</div>
+<!-- Bar Group 5 (Hidden on Mobile) -->
+<div class="hidden md:flex flex-col items-center gap-4 h-full justify-end">
+<div class="flex items-end gap-1 w-full justify-center">
+<div class="w-8 bg-primary-container rounded-t-lg" style="height: 90px;"></div>
+<div class="w-8 bg-primary rounded-t-lg" style="height: 110px;"></div>
+</div>
+<span class="text-xs font-bold text-on-surface">Other</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#e2fffe]/80 dark:bg-slate-950/80 backdrop-blur-xl rounded-t-3xl shadow-[0_-8px_32px_rgba(0,101,101,0.06)]">
+<a class="flex flex-col items-center justify-center text-[#006565]/60 dark:text-slate-400 px-4 py-2 hover:bg-[#008080]/5" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-medium font-body uppercase mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#006565]/60 dark:text-slate-400 px-4 py-2 hover:bg-[#008080]/5" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-[10px] font-medium font-body uppercase mt-1">Split</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#006565]/60 dark:text-slate-400 px-4 py-2 hover:bg-[#008080]/5" href="#">
+<span class="material-symbols-outlined text-[32px] text-primary" data-icon="add_circle">add_circle</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#008080] text-white rounded-2xl px-4 py-2 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="insights" style="font-variation-settings: 'FILL' 1;">insights</span>
+<span class="text-[10px] font-medium font-body uppercase mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#006565]/60 dark:text-slate-400 px-4 py-2 hover:bg-[#008080]/5" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-medium font-body uppercase mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

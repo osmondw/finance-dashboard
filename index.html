@@ -48,36 +48,83 @@ tailwind.config = {
   .hl { font-family: 'DM Serif Display', serif; }
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; line-height: 1; vertical-align: middle; }
 
-  /* ── AUTH SCREEN ── */
-  #authScreen {
+  /* ── AUTH / LANDING SCREENS ── */
+  #authScreen, #landingScreen {
     position: fixed; inset: 0; z-index: 1000;
-    background: #e8fffe;
+    background: #e2fffe;
     display: flex; align-items: center; justify-content: center;
     padding: 1.5rem;
     transition: opacity 0.4s ease;
+    overflow-y: auto;
   }
-  #authScreen.hiding { opacity: 0; pointer-events: none; }
+  #authScreen.hiding, #landingScreen.hiding { opacity: 0; pointer-events: none; }
 
+  /* Auth background blobs */
+  .auth-blob-1 {
+    position: fixed; top: -10%; left: -10%; width: 50%; height: 50%;
+    border-radius: 50%; background: rgba(0,101,101,0.1); filter: blur(120px);
+    pointer-events: none; z-index: 0;
+  }
+  .auth-blob-2 {
+    position: fixed; bottom: -5%; right: -5%; width: 40%; height: 40%;
+    border-radius: 50%; background: rgba(0,128,128,0.15); filter: blur(100px);
+    pointer-events: none; z-index: 0;
+  }
+  /* Floating decorative elements */
+  .auth-deco-1 {
+    position: fixed; top: 80px; right: 15%; width: 128px; height: 128px;
+    border: 2px solid #008080; border-radius: 24px; transform: rotate(12deg);
+    opacity: 0.2; pointer-events: none; display: none;
+  }
+  .auth-deco-2 {
+    position: fixed; bottom: 80px; left: 15%; width: 96px; height: 96px;
+    border: 24px solid #76d6d5; border-radius: 50%;
+    opacity: 0.1; pointer-events: none; display: none;
+  }
+  @media (min-width: 1024px) { .auth-deco-1, .auth-deco-2 { display: block; } }
+
+  /* Auth main container */
+  .auth-main {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 420px;
+  }
+
+  /* Brand header */
+  .auth-brand {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 2rem; gap: 0;
+  }
+  .auth-brand-icon {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #006565, #008080);
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 32px rgba(0,101,101,0.15);
+  }
+  .auth-brand h1 {
+    font-family: 'DM Serif Display', serif; font-size: 2rem;
+    font-weight: 800; color: #002020; text-align: center; margin-bottom: 0.5rem;
+  }
+  .auth-brand p {
+    font-size: 0.875rem; color: #3e4949; text-align: center; padding: 0 1rem;
+  }
+
+  /* Auth card */
   .auth-card {
-    background: white; border-radius: 28px;
-    padding: 2rem 1.75rem; width: 100%; max-width: 400px;
-    box-shadow: 0 8px 40px rgba(0,101,101,0.12);
+    background: white;
+    border-radius: 20px; padding: 2rem; width: 100%;
+    box-shadow: 0 8px 40px rgba(0,101,101,0.08);
   }
-  .auth-logo {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 2rem;
-  }
-  .auth-logo-mark {
-    width: 44px; height: 44px; border-radius: 14px;
-    background: #006565; display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 700; font-size: 16px; flex-shrink: 0;
-  }
+
+  /* Tab bar - hidden in signin, shown in register */
   .auth-tab-bar {
-    display: flex; background: #f0fffe; border-radius: 14px;
+    display: none;
+    background: rgba(0,101,101,0.06); border-radius: 12px;
     padding: 4px; gap: 4px; margin-bottom: 1.5rem;
   }
+  .auth-tab-bar.show-tabs { display: flex; }
   .auth-tab {
-    flex: 1; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 700;
+    flex: 1; padding: 9px; border-radius: 8px; font-size: 13px; font-weight: 700;
     cursor: pointer; border: none; background: transparent; color: #6e7979;
     transition: all 0.15s; font-family: 'DM Sans', sans-serif;
   }
@@ -86,58 +133,137 @@ tailwind.config = {
   .auth-view { display: none; }
   .auth-view.active { display: block; animation: fadeUp 0.2s ease; }
 
+  /* Input fields */
+  .auth-field-label {
+    font-size: 11px; font-weight: 700; color: #3e4949;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    display: block; margin-bottom: 8px; margin-left: 4px;
+  }
   .auth-input-wrap {
-    position: relative; margin-bottom: 12px;
+    display: flex; align-items: center;
+    background: #edfafa;
+    border: 1.5px solid #c6e9e9;
+    border-radius: 10px;
+    margin-bottom: 16px; overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  }
+  .auth-input-wrap:focus-within {
+    background: #ffffff;
+    border-color: #006565;
+    box-shadow: 0 0 0 3px rgba(0,101,101,0.08);
   }
   .auth-input-icon {
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    flex-shrink: 0;
+    width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
     color: #6e7979; font-size: 20px; pointer-events: none;
+    transition: color 0.15s;
   }
+  .auth-input-wrap:focus-within .auth-input-icon { color: #006565; }
   .auth-input {
-    width: 100%; background: #f8fffe; border: 1.5px solid #c6e9e9;
-    border-radius: 12px; padding: 12px 14px 12px 44px;
+    flex: 1; background: transparent; border: none;
+    padding: 14px 14px 14px 0;
     font-size: 14px; font-family: 'DM Sans', sans-serif; color: #002020;
-    outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none; min-width: 0;
   }
-  .auth-input:focus { border-color: #006565; box-shadow: 0 0 0 3px rgba(0,101,101,0.1); background: white; }
-  .auth-input.error { border-color: #ba1a1a; box-shadow: 0 0 0 3px rgba(186,26,26,0.08); }
-  .auth-input::placeholder { color: #bdc9c8; }
+  .auth-input::placeholder { color: #9eb5b5; }
 
   .auth-pw-toggle {
-    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; cursor: pointer; color: #6e7979; padding: 0;
-    display: flex; align-items: center;
+    flex-shrink: 0;
+    width: 44px; height: 48px;
+    display: flex; align-items: center; justify-content: center;
+    background: none; border: none; cursor: pointer; color: #6e7979;
+    transition: color 0.15s;
   }
+  .auth-pw-toggle:hover { color: #002020; }
+
+  /* Social login modal */
+  .social-modal-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(0,32,32,0.45);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .social-modal-overlay.open { opacity: 1; pointer-events: all; }
+  .social-modal {
+    background: white; border-radius: 20px;
+    padding: 2rem 1.75rem; width: 100%; max-width: 360px;
+    transform: scale(0.92) translateY(12px);
+    transition: transform 0.3s cubic-bezier(0.34,1.3,0.64,1);
+    box-shadow: 0 20px 60px rgba(0,32,32,0.2);
+  }
+  .social-modal-overlay.open .social-modal { transform: scale(1) translateY(0); }
+
   .auth-error-msg {
-    color: #ba1a1a; font-size: 12px; font-weight: 500; margin-bottom: 12px;
+    color: #ba1a1a; font-size: 12px; font-weight: 500; margin-bottom: 14px;
     display: none; background: #ffdad6; border-radius: 8px; padding: 8px 12px;
   }
   .auth-error-msg.show { display: block; animation: fadeUp 0.2s ease; }
 
+  /* Forgot password link */
+  .auth-forgot {
+    font-size: 12px; font-weight: 700; color: #006565;
+    text-decoration: none; transition: color 0.15s;
+  }
+  .auth-forgot:hover { color: #004f4f; }
+
+  /* Primary auth button */
   .btn-auth {
-    width: 100%; background: #006565; color: white; padding: 14px;
-    border-radius: 14px; font-weight: 700; font-size: 15px;
+    width: 100%; background: linear-gradient(135deg, #006565, #008080);
+    color: white; padding: 16px;
+    border-radius: 12px; font-weight: 700; font-size: 15px;
     border: none; cursor: pointer; transition: all 0.15s;
     font-family: 'DM Sans', sans-serif; margin-top: 4px;
     display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 8px 24px rgba(0,101,101,0.2);
   }
-  .btn-auth:hover { background: #004f4f; transform: translateY(-1px); }
+  .btn-auth:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn-auth:active { transform: scale(0.98); }
-  .btn-auth:disabled { background: #bdc9c8; cursor: not-allowed; transform: none; }
+  .btn-auth:disabled { background: #bdc9c8; cursor: not-allowed; transform: none; box-shadow: none; }
 
+  /* Social login buttons */
+  .social-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 16px; background: rgba(198,233,233,0.5); border-radius: 10px;
+    border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #002020;
+    font-family: 'DM Sans', sans-serif; transition: background 0.15s;
+  }
+  .social-btn:hover { background: rgba(198,233,233,0.8); }
+  .social-btn:active { transform: scale(0.95); }
+
+  /* Divider */
   .auth-divider {
-    display: flex; align-items: center; gap: 10px;
-    margin: 1.25rem 0; color: #bdc9c8; font-size: 12px;
+    display: flex; align-items: center; gap: 16px;
+    margin: 1.5rem 0;
   }
   .auth-divider::before, .auth-divider::after {
-    content: ''; flex: 1; height: 1px; background: #c6e9e9;
+    content: ''; flex: 1; height: 1px; background: rgba(189,201,200,0.3);
+  }
+  .auth-divider span {
+    font-size: 10px; font-weight: 700; color: #6e7979;
+    letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap;
   }
 
   .auth-switch-link {
-    text-align: center; font-size: 13px; color: #6e7979; margin-top: 1.25rem;
+    text-align: center; font-size: 14px; color: #3e4949; margin-top: 2rem;
   }
   .auth-switch-link span { color: #006565; font-weight: 700; cursor: pointer; }
   .auth-switch-link span:hover { text-decoration: underline; }
+
+  /* Security info card */
+  .auth-info-card {
+    display: flex; align-items: center; gap: 1rem;
+    background: rgba(215,250,250,0.6); border-radius: 10px;
+    padding: 1rem; margin-top: 3rem;
+    border: 1px solid rgba(189,201,200,0.1);
+    transition: all 0.7s;
+  }
+  .auth-info-card .icon-ring {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(0,101,101,0.1); display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
 
   .pw-strength-bar {
     height: 4px; border-radius: 999px; background: #c6e9e9;
@@ -145,6 +271,75 @@ tailwind.config = {
   }
   .pw-strength-fill { height: 100%; border-radius: 999px; transition: width 0.3s, background 0.3s; width: 0%; }
   .pw-strength-label { font-size: 11px; font-weight: 600; margin-top: 3px; }
+
+  /* ── LANDING SCREEN (mode selection) ── */
+  #landingScreen { background: #e2fffe; display: none; }
+  .landing-main {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 800px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 2rem 0;
+  }
+  .landing-header { text-align: center; margin-bottom: 3rem; }
+  .landing-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800; color: #002020; line-height: 1.15; margin-bottom: 1rem;
+  }
+  .landing-header h1 em { color: #006565; font-style: normal; }
+  .landing-header p { font-size: 1rem; color: #3e4949; max-width: 400px; margin: 0 auto; }
+  .landing-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    width: 100%; margin-bottom: 3rem;
+  }
+  @media (max-width: 600px) { .landing-cards { grid-template-columns: 1fr; gap: 1rem; } }
+  .landing-mode-card {
+    background: white; border-radius: 24px; padding: 2rem;
+    border: 2px solid transparent; cursor: pointer;
+    transition: all 0.3s; display: flex; flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0,101,101,0.04);
+  }
+  .landing-mode-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px rgba(0,101,101,0.08);
+    border-color: rgba(0,101,101,0.12);
+  }
+  .landing-mode-card.selected {
+    border-color: #006565;
+    box-shadow: 0 20px 48px rgba(0,101,101,0.12);
+  }
+  .landing-card-icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: #d2f5f4; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem; transition: background 0.3s;
+  }
+  .landing-mode-card:hover .landing-card-icon,
+  .landing-mode-card.selected .landing-card-icon {
+    background: linear-gradient(135deg, #006565, #008080);
+  }
+  .landing-mode-card:hover .landing-card-icon .material-symbols-outlined,
+  .landing-mode-card.selected .landing-card-icon .material-symbols-outlined {
+    color: white !important;
+  }
+  .landing-card-link {
+    display: flex; align-items: center; gap: 8px;
+    color: #006565; font-weight: 700; font-size: 14px; margin-top: auto; padding-top: 2rem;
+  }
+  .landing-continue-btn {
+    width: 100%; max-width: 320px;
+    background: linear-gradient(135deg, #006565, #008080);
+    color: white; padding: 16px; border-radius: 16px;
+    font-weight: 700; font-size: 16px; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 12px 32px rgba(0,101,101,0.2);
+    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .landing-continue-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .landing-continue-btn:active { transform: scale(0.98); }
+  .landing-footer-note {
+    text-align: center; margin-top: 1.25rem;
+    font-size: 12px; color: rgba(62,73,73,0.6); font-weight: 500;
+  }
 
   /* ── LAYOUT ── */
   .app-shell {
@@ -437,94 +632,250 @@ tailwind.config = {
 <body>
 
 <!-- ═══════════════════════════════════════════════════════════ -->
-<!-- AUTH SCREEN                                                  -->
+<!-- AUTH SCREEN (login-page.html design)                         -->
 <!-- ═══════════════════════════════════════════════════════════ -->
 <div id="authScreen">
-  <div class="auth-card">
+  <!-- Background blobs -->
+  <div class="auth-blob-1"></div>
+  <div class="auth-blob-2"></div>
+  <!-- Floating decorative shapes -->
+  <div class="auth-deco-1"></div>
+  <div class="auth-deco-2"></div>
 
-    <!-- Logo -->
-    <div class="auth-logo">
-      <div class="auth-logo-mark">TF</div>
+  <main class="auth-main">
+    <!-- Brand Identity -->
+    <header class="auth-brand">
+      <div class="auth-brand-icon">
+        <span class="material-symbols-outlined" style="color:white;font-size:36px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">account_balance_wallet</span>
+      </div>
+      <h1 id="authHeadline">Welcome Back</h1>
+      <p id="authSubline">Sign in to access your financial precision dashboard</p>
+    </header>
+
+    <!-- Login / Register Card -->
+    <div class="auth-card">
+      <!-- Tab Bar -->
+      <div class="auth-tab-bar">
+        <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <!-- ── SIGN IN VIEW ── -->
+      <div class="auth-view active" id="viewSignIn">
+        <div id="signinError" class="auth-error-msg"></div>
+
+        <!-- Email -->
+        <div style="margin-bottom:16px;">
+          <label class="auth-field-label">Email Address</label>
+          <div class="auth-input-wrap" style="margin-bottom:0;">
+            <span class="material-symbols-outlined auth-input-icon">mail</span>
+            <input class="auth-input" id="signinEmail" type="email" placeholder="name@company.com" autocomplete="email"/>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <label class="auth-field-label" style="margin-bottom:0;">Password</label>
+            <a href="#" class="auth-forgot" onclick="return false;">Forgot Password?</a>
+          </div>
+          <div class="auth-input-wrap" style="margin-bottom:0;">
+            <span class="material-symbols-outlined auth-input-icon">lock</span>
+            <input class="auth-input" id="signinPassword" type="password" placeholder="••••••••" autocomplete="current-password"/>
+            <button class="auth-pw-toggle" onclick="togglePwVisibility('signinPassword', this)" type="button">
+              <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-auth" onclick="handleSignIn()">Login</button>
+
+        <!-- Social Login Divider -->
+        <div class="auth-divider"><span>Or sign in with</span></div>
+
+        <!-- Social Buttons -->
+        <div style="display:flex;gap:12px;">
+          <button class="social-btn" onclick="handleGoogleLogin()">
+            <span class="material-symbols-outlined" style="font-size:20px;color:#3e4949;">language</span>
+            <span>Google</span>
+          </button>
+          <button class="social-btn" onclick="openSocialModal('emailLoginModal')">
+            <span class="material-symbols-outlined" style="font-size:20px;color:#3e4949;">mail</span>
+            <span>Email</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── REGISTER VIEW ── -->
+      <div class="auth-view" id="viewRegister">
+        <div id="registerError" class="auth-error-msg"></div>
+
+        <div>
+          <label class="auth-field-label">Full Name</label>
+          <div class="auth-input-wrap">
+            <span class="material-symbols-outlined auth-input-icon">person</span>
+            <input class="auth-input" id="regName" type="text" placeholder="Your full name" autocomplete="name"/>
+          </div>
+        </div>
+        <div>
+          <label class="auth-field-label">Email Address</label>
+          <div class="auth-input-wrap">
+            <span class="material-symbols-outlined auth-input-icon">mail</span>
+            <input class="auth-input" id="regEmail" type="email" placeholder="name@company.com" autocomplete="email"/>
+          </div>
+        </div>
+        <div>
+          <label class="auth-field-label">Password</label>
+          <div class="auth-input-wrap">
+            <span class="material-symbols-outlined auth-input-icon">lock</span>
+            <input class="auth-input" id="regPassword" type="password" placeholder="Min. 6 characters" autocomplete="new-password" oninput="checkPwStrength(this.value)"/>
+            <button class="auth-pw-toggle" onclick="togglePwVisibility('regPassword', this)" type="button">
+              <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            </button>
+          </div>
+          <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwStrengthFill"></div></div>
+          <p class="pw-strength-label" id="pwStrengthLabel" style="color:#bdc9c8;">Enter a password</p>
+        </div>
+        <div style="margin-top:12px;">
+          <label class="auth-field-label">Confirm Password</label>
+          <div class="auth-input-wrap">
+            <span class="material-symbols-outlined auth-input-icon">lock_reset</span>
+            <input class="auth-input" id="regConfirm" type="password" placeholder="Re-enter password" autocomplete="new-password"/>
+            <button class="auth-pw-toggle" onclick="togglePwVisibility('regConfirm', this)" type="button">
+              <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-auth" onclick="handleRegister()">
+          <span class="material-symbols-outlined" style="font-size:20px;">person_add</span>
+          Create Account
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer switch link -->
+    <p class="auth-switch-link" id="authSwitchLink">
+      Don't have an account? <span onclick="switchAuthTab('register')">Sign Up</span>
+    </p>
+
+    <!-- Security info card -->
+    <div class="auth-info-card">
+      <div class="icon-ring">
+        <span class="material-symbols-outlined" style="color:#006565;font-size:20px;">shield</span>
+      </div>
       <div>
-        <div style="font-weight:700;font-size:16px;color:#006565;">Mong's Finance</div>
-        <div style="font-size:12px;color:#6e7979;">Your Finance Solution</div>
+        <p style="font-size:12px;font-weight:700;color:#002020;margin-bottom:2px;">Secure Infrastructure</p>
+        <p style="font-size:11px;color:#3e4949;">256-bit encryption for your financial data</p>
       </div>
     </div>
+  </main>
+</div>
 
-    <!-- Tab Bar -->
-    <div class="auth-tab-bar">
-      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
-      <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
-    </div>
-
-    <!-- ── SIGN IN VIEW ── -->
-    <div class="auth-view active" id="viewSignIn">
-      <div id="signinError" class="auth-error-msg"></div>
-
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">mail</span>
-        <input class="auth-input" id="signinEmail" type="email" placeholder="Email address" autocomplete="email"/>
+<!-- ── EMAIL LOGIN MODAL ── -->
+<div class="social-modal-overlay" id="emailLoginModal" onclick="if(event.target===this)closeSocialModal('emailLoginModal')">
+  <div class="social-modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:#d7fafa;display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:#006565;font-size:20px;">mail</span>
+        </div>
+        <h3 style="font-weight:700;font-size:17px;color:#002020;">Sign in with Email</h3>
       </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">lock</span>
-        <input class="auth-input" id="signinPassword" type="password" placeholder="Password" autocomplete="current-password"/>
-        <button class="auth-pw-toggle" onclick="togglePwVisibility('signinPassword', this)" type="button">
-          <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
-        </button>
-      </div>
-
-      <button class="btn-auth" onclick="handleSignIn()">
-        <span class="material-symbols-outlined" style="font-size:20px;">login</span>
-        Sign In
+      <button onclick="closeSocialModal('emailLoginModal')" style="width:32px;height:32px;border-radius:50%;background:#f0fffe;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <span class="material-symbols-outlined" style="font-size:18px;color:#3e4949;">close</span>
       </button>
-
-      <div class="auth-switch-link">
-        Don't have an account? <span onclick="switchAuthTab('register')">Register now</span>
-      </div>
     </div>
-
-    <!-- ── REGISTER VIEW ── -->
-    <div class="auth-view" id="viewRegister">
-      <div id="registerError" class="auth-error-msg"></div>
-
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">person</span>
-        <input class="auth-input" id="regName" type="text" placeholder="Full name" autocomplete="name"/>
-      </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">mail</span>
-        <input class="auth-input" id="regEmail" type="email" placeholder="Email address" autocomplete="email"/>
-      </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">lock</span>
-        <input class="auth-input" id="regPassword" type="password" placeholder="Password (min 6 chars)" autocomplete="new-password" oninput="checkPwStrength(this.value)"/>
-        <button class="auth-pw-toggle" onclick="togglePwVisibility('regPassword', this)" type="button">
-          <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
-        </button>
-      </div>
-      <div style="margin-bottom:12px;">
-        <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwStrengthFill"></div></div>
-        <p class="pw-strength-label" id="pwStrengthLabel" style="color:#bdc9c8;">Enter a password</p>
-      </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">lock_reset</span>
-        <input class="auth-input" id="regConfirm" type="password" placeholder="Confirm password" autocomplete="new-password"/>
-        <button class="auth-pw-toggle" onclick="togglePwVisibility('regConfirm', this)" type="button">
-          <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
-        </button>
-      </div>
-
-      <button class="btn-auth" onclick="handleRegister()">
-        <span class="material-symbols-outlined" style="font-size:20px;">person_add</span>
-        Create Account
+    <div id="emailModalError" class="auth-error-msg"></div>
+    <label class="auth-field-label">Email Address</label>
+    <div class="auth-input-wrap" style="margin-bottom:12px;">
+      <span class="material-symbols-outlined auth-input-icon">mail</span>
+      <input class="auth-input" id="emailModalEmail" type="email" placeholder="name@company.com" onkeydown="if(event.key==='Enter')handleEmailModalLogin()"/>
+    </div>
+    <label class="auth-field-label">Password</label>
+    <div class="auth-input-wrap" style="margin-bottom:20px;">
+      <span class="material-symbols-outlined auth-input-icon">lock</span>
+      <input class="auth-input" id="emailModalPassword" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleEmailModalLogin()"/>
+      <button class="auth-pw-toggle" onclick="togglePwVisibility('emailModalPassword', this)" type="button">
+        <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
       </button>
-
-      <div class="auth-switch-link">
-        Already have an account? <span onclick="switchAuthTab('signin')">Sign in</span>
-      </div>
     </div>
-
+    <button class="btn-auth" onclick="handleEmailModalLogin()" style="margin-top:0;">Sign In</button>
+    <p style="text-align:center;font-size:13px;color:#3e4949;margin-top:1rem;">
+      No account? <span onclick="closeSocialModal('emailLoginModal');switchAuthTab('register');" style="color:#006565;font-weight:700;cursor:pointer;">Register here</span>
+    </p>
   </div>
+</div>
+
+<!-- ── GOOGLE NOT AVAILABLE TOAST (no backend) ── -->
+<!-- Google OAuth requires a backend redirect — handled via toast notification -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="landingScreen">
+  <!-- Background blobs (reuse auth blobs) -->
+  <div class="auth-blob-1"></div>
+  <div class="auth-blob-2"></div>
+
+  <main class="landing-main">
+    <!-- Brand -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:3rem;">
+      <div style="width:48px;height:48px;background:linear-gradient(135deg,#006565,#008080);border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,101,101,0.2);">
+        <span class="material-symbols-outlined" style="color:white;font-size:28px;">account_balance</span>
+      </div>
+      <span style="font-size:18px;font-weight:700;color:#006565;letter-spacing:-0.02em;">Mong's Finance</span>
+    </div>
+
+    <div class="landing-header">
+      <h1>Refine Your <em>Financial Flow</em></h1>
+      <p>Select your preferred interface to begin managing your assets with precision and fluidity.</p>
+    </div>
+
+    <div class="landing-cards">
+      <!-- Personal Mode -->
+      <div class="landing-mode-card selected" id="modeCardPersonal" onclick="selectMode('personal')">
+        <div class="landing-card-icon">
+          <span class="material-symbols-outlined" id="modeIconPersonal" style="color:#006565;font-size:28px;">person</span>
+        </div>
+        <h3 style="font-family:'DM Serif Display',serif;font-size:1.35rem;color:#002020;margin-bottom:0.75rem;">Personal Mode</h3>
+        <p style="font-size:13px;color:#3e4949;line-height:1.6;">Designed for individuals. Track daily expenses, monitor savings goals, and manage your personal investment portfolio with elegant simplicity.</p>
+        <div class="landing-card-link">
+          <span>Select Identity</span>
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+        </div>
+      </div>
+      <!-- Business Mode -->
+      <div class="landing-mode-card" id="modeCardBusiness" onclick="selectMode('business')">
+        <div class="landing-card-icon">
+          <span class="material-symbols-outlined" id="modeIconBusiness" style="color:#006565;font-size:28px;">corporate_fare</span>
+        </div>
+        <h3 style="font-family:'DM Serif Display',serif;font-size:1.35rem;color:#002020;margin-bottom:0.75rem;">Business Mode</h3>
+        <p style="font-size:13px;color:#3e4949;line-height:1.6;">Built for scale. Robust company accounting, multi-user approval workflows, and deep financial reporting for enterprise operations.</p>
+        <div class="landing-card-link">
+          <span>Select Identity</span>
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Continue Button -->
+    <button class="landing-continue-btn" onclick="confirmMode()">
+      <span>Continue</span>
+      <span class="material-symbols-outlined" style="font-size:20px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">bolt</span>
+    </button>
+    <p class="landing-footer-note">Switch modes anytime from your profile settings.</p>
+
+    <!-- Footer badges -->
+    <div style="display:flex;align-items:center;gap:24px;margin-top:2.5rem;opacity:0.4;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="material-symbols-outlined" style="font-size:16px;color:#3e4949;">security</span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:#3e4949;">Bank-Level Security</span>
+      </div>
+      <div style="width:1px;height:16px;background:#bdc9c8;"></div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span class="material-symbols-outlined" style="font-size:16px;color:#3e4949;">verified_user</span>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;font-weight:700;color:#3e4949;">Regulated Entity</span>
+      </div>
+    </div>
+  </main>
 </div>
 
 <!-- TOAST -->
@@ -1020,6 +1371,18 @@ function switchAuthTab(tab) {
   });
   document.getElementById('signinError').classList.remove('show');
   document.getElementById('registerError').classList.remove('show');
+  // Show tab bar only when on register (so user can switch back)
+  document.querySelector('.auth-tab-bar').classList.toggle('show-tabs', tab === 'register');
+  // Update brand headline & switch link text
+  if (tab === 'signin') {
+    document.getElementById('authHeadline').textContent = 'Welcome Back';
+    document.getElementById('authSubline').textContent = 'Sign in to access your financial precision dashboard';
+    document.getElementById('authSwitchLink').innerHTML = 'Don\'t have an account? <span onclick="switchAuthTab(\'register\')">Sign Up</span>';
+  } else {
+    document.getElementById('authHeadline').textContent = 'Create Account';
+    document.getElementById('authSubline').textContent = 'Join and start managing your finances with precision';
+    document.getElementById('authSwitchLink').innerHTML = 'Already have an account? <span onclick="switchAuthTab(\'signin\')">Sign In</span>';
+  }
 }
 
 function togglePwVisibility(inputId, btn) {
@@ -1057,6 +1420,50 @@ function showAuthError(viewId, msg) {
   const el = document.getElementById(viewId);
   el.textContent = msg;
   el.classList.add('show');
+}
+
+// ── SOCIAL LOGIN ──
+function openSocialModal(id) { document.getElementById(id).classList.add('open'); }
+function closeSocialModal(id) {
+  document.getElementById(id).classList.remove('open');
+  // clear fields
+  if (id === 'emailLoginModal') {
+    document.getElementById('emailModalEmail').value = '';
+    document.getElementById('emailModalPassword').value = '';
+    document.getElementById('emailModalError').classList.remove('show');
+  }
+}
+
+function handleGoogleLogin() {
+  // Google OAuth requires a server-side redirect (client_id + redirect_uri).
+  // Since this is a self-contained file, we simulate with a demo account.
+  const demoEmail = 'google.user@gmail.com';
+  const users = getUsers();
+  if (!users[demoEmail]) {
+    users[demoEmail] = { name: 'Google User', email: demoEmail, passwordHash: '', provider: 'google', createdAt: new Date().toISOString() };
+    saveUsers(users);
+  }
+  const session = { email: demoEmail, name: users[demoEmail].name };
+  saveSession(session);
+  toast('🔑 Signed in with Google (demo)');
+  launchApp(session);
+}
+
+function handleEmailModalLogin() {
+  const email = document.getElementById('emailModalEmail').value.trim().toLowerCase();
+  const pw    = document.getElementById('emailModalPassword').value;
+  document.getElementById('emailModalError').classList.remove('show');
+
+  if (!email || !pw) { showAuthError('emailModalError', 'Please fill in all fields.'); return; }
+
+  const users = getUsers();
+  if (!users[email]) { showAuthError('emailModalError', 'No account found with this email.'); return; }
+  if (users[email].passwordHash !== hashPassword(pw)) { showAuthError('emailModalError', 'Incorrect password. Please try again.'); return; }
+
+  closeSocialModal('emailLoginModal');
+  const session = { email, name: users[email].name };
+  saveSession(session);
+  launchApp(session);
 }
 
 function handleSignIn() {
@@ -1104,12 +1511,16 @@ function authLogout() {
   S.transactions = [];
   S.page = 'home';
   S.businessMode = false;
-  // Show auth screen, hide app
+  S.currentUser = null;
+  _pendingSession = null;
+  // Hide landing and app screens
+  document.getElementById('landingScreen').style.display = 'none';
+  document.getElementById('appShell').style.display = 'none';
+  // Show auth screen
   const auth = document.getElementById('authScreen');
-  const app  = document.getElementById('appShell');
   auth.style.display = 'flex';
   auth.style.opacity = '1';
-  app.style.display  = 'none';
+  auth.classList.remove('hiding');
   // Clear signin form
   document.getElementById('signinEmail').value    = '';
   document.getElementById('signinPassword').value = '';
@@ -1123,14 +1534,51 @@ function launchApp(session) {
   authEl.classList.add('hiding');
   setTimeout(() => { authEl.style.display = 'none'; }, 400);
 
-  // Show app
+  // Show landing/mode selection screen
+  showLandingScreen(session);
+}
+
+// ── LANDING SCREEN LOGIC ──
+let _pendingSession = null;
+let _selectedMode = 'personal'; // default
+
+function showLandingScreen(session) {
+  _pendingSession = session;
+  _selectedMode = 'personal';
+  // Reset card selection to personal
+  document.getElementById('modeCardPersonal').classList.add('selected');
+  document.getElementById('modeCardBusiness').classList.remove('selected');
+  const landingEl = document.getElementById('landingScreen');
+  landingEl.style.display = 'flex';
+  landingEl.style.opacity = '1';
+}
+
+function selectMode(mode) {
+  _selectedMode = mode;
+  document.getElementById('modeCardPersonal').classList.toggle('selected', mode === 'personal');
+  document.getElementById('modeCardBusiness').classList.toggle('selected', mode === 'business');
+}
+
+function confirmMode() {
+  const landingEl = document.getElementById('landingScreen');
+  landingEl.classList.add('hiding');
+  setTimeout(() => { landingEl.style.display = 'none'; landingEl.classList.remove('hiding'); }, 400);
+
+  // Apply mode selection and launch app
+  const session = _pendingSession;
   document.getElementById('appShell').style.display = '';
-
-  // Load this user's data
   loadFromStorage(session.email);
-
-  // Boot dashboard
   initApp(session);
+
+  // Apply business mode if selected
+  if (_selectedMode === 'business') {
+    S.businessMode = true;
+    ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
+    const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
+    const smMode = document.getElementById('sidebarMode'); if (smMode) smMode.textContent = 'Business Mode';
+    const pmBadge = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
+    const bizBtn = document.getElementById('bizBtn'); if (bizBtn) bizBtn.textContent = 'Business';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1713,11 +2161,9 @@ function toast(msg) {
 document.addEventListener('DOMContentLoaded', () => {
   const session = getSession();
   if (session && session.email) {
-    // Already logged in — skip auth screen
+    // Already logged in — skip auth screen, show landing screen for mode selection
     document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('appShell').style.display   = '';
-    loadFromStorage(session.email);
-    initApp(session);
+    showLandingScreen(session);
   }
   // else: auth screen is already visible by default
 });
