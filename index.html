@@ -48,104 +48,6 @@ tailwind.config = {
   .hl { font-family: 'DM Serif Display', serif; }
   .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; line-height: 1; vertical-align: middle; }
 
-  /* ── AUTH SCREEN ── */
-  #authScreen {
-    position: fixed; inset: 0; z-index: 1000;
-    background: #e8fffe;
-    display: flex; align-items: center; justify-content: center;
-    padding: 1.5rem;
-    transition: opacity 0.4s ease;
-  }
-  #authScreen.hiding { opacity: 0; pointer-events: none; }
-
-  .auth-card {
-    background: white; border-radius: 28px;
-    padding: 2rem 1.75rem; width: 100%; max-width: 400px;
-    box-shadow: 0 8px 40px rgba(0,101,101,0.12);
-  }
-  .auth-logo {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 2rem;
-  }
-  .auth-logo-mark {
-    width: 44px; height: 44px; border-radius: 14px;
-    background: #006565; display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 700; font-size: 16px; flex-shrink: 0;
-  }
-  .auth-tab-bar {
-    display: flex; background: #f0fffe; border-radius: 14px;
-    padding: 4px; gap: 4px; margin-bottom: 1.5rem;
-  }
-  .auth-tab {
-    flex: 1; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 700;
-    cursor: pointer; border: none; background: transparent; color: #6e7979;
-    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-  }
-  .auth-tab.active { background: white; color: #006565; box-shadow: 0 2px 8px rgba(0,101,101,0.1); }
-
-  .auth-view { display: none; }
-  .auth-view.active { display: block; animation: fadeUp 0.2s ease; }
-
-  .auth-input-wrap {
-    position: relative; margin-bottom: 12px;
-  }
-  .auth-input-icon {
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-    color: #6e7979; font-size: 20px; pointer-events: none;
-  }
-  .auth-input {
-    width: 100%; background: #f8fffe; border: 1.5px solid #c6e9e9;
-    border-radius: 12px; padding: 12px 14px 12px 44px;
-    font-size: 14px; font-family: 'DM Sans', sans-serif; color: #002020;
-    outline: none; transition: border-color 0.15s, box-shadow 0.15s;
-  }
-  .auth-input:focus { border-color: #006565; box-shadow: 0 0 0 3px rgba(0,101,101,0.1); background: white; }
-  .auth-input.error { border-color: #ba1a1a; box-shadow: 0 0 0 3px rgba(186,26,26,0.08); }
-  .auth-input::placeholder { color: #bdc9c8; }
-
-  .auth-pw-toggle {
-    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; cursor: pointer; color: #6e7979; padding: 0;
-    display: flex; align-items: center;
-  }
-  .auth-error-msg {
-    color: #ba1a1a; font-size: 12px; font-weight: 500; margin-bottom: 12px;
-    display: none; background: #ffdad6; border-radius: 8px; padding: 8px 12px;
-  }
-  .auth-error-msg.show { display: block; animation: fadeUp 0.2s ease; }
-
-  .btn-auth {
-    width: 100%; background: #006565; color: white; padding: 14px;
-    border-radius: 14px; font-weight: 700; font-size: 15px;
-    border: none; cursor: pointer; transition: all 0.15s;
-    font-family: 'DM Sans', sans-serif; margin-top: 4px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .btn-auth:hover { background: #004f4f; transform: translateY(-1px); }
-  .btn-auth:active { transform: scale(0.98); }
-  .btn-auth:disabled { background: #bdc9c8; cursor: not-allowed; transform: none; }
-
-  .auth-divider {
-    display: flex; align-items: center; gap: 10px;
-    margin: 1.25rem 0; color: #bdc9c8; font-size: 12px;
-  }
-  .auth-divider::before, .auth-divider::after {
-    content: ''; flex: 1; height: 1px; background: #c6e9e9;
-  }
-
-  .auth-switch-link {
-    text-align: center; font-size: 13px; color: #6e7979; margin-top: 1.25rem;
-  }
-  .auth-switch-link span { color: #006565; font-weight: 700; cursor: pointer; }
-  .auth-switch-link span:hover { text-decoration: underline; }
-
-  .pw-strength-bar {
-    height: 4px; border-radius: 999px; background: #c6e9e9;
-    margin-top: 6px; overflow: hidden; transition: all 0.3s;
-  }
-  .pw-strength-fill { height: 100%; border-radius: 999px; transition: width 0.3s, background 0.3s; width: 0%; }
-  .pw-strength-label { font-size: 11px; font-weight: 600; margin-top: 3px; }
-
   /* ── LAYOUT ── */
   .app-shell {
     display: grid;
@@ -334,7 +236,7 @@ tailwind.config = {
   .toast {
     position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px);
     background: #002828; color: white; padding: 10px 22px; border-radius: 999px;
-    font-size: 14px; font-weight: 500; z-index: 9999; transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+    font-size: 14px; font-weight: 500; z-index: 200; transition: transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
     white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
@@ -436,97 +338,6 @@ tailwind.config = {
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- AUTH SCREEN                                                  -->
-<!-- ═══════════════════════════════════════════════════════════ -->
-<div id="authScreen">
-  <div class="auth-card">
-
-    <!-- Logo -->
-    <div class="auth-logo">
-      <div class="auth-logo-mark">TF</div>
-      <div>
-        <div style="font-weight:700;font-size:16px;color:#006565;">Mong's Finance</div>
-        <div style="font-size:12px;color:#6e7979;">Track. Split. Prosper.</div>
-      </div>
-    </div>
-
-    <!-- Tab Bar -->
-    <div class="auth-tab-bar">
-      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
-      <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Register</button>
-    </div>
-
-    <!-- ── SIGN IN VIEW ── -->
-    <div class="auth-view active" id="viewSignIn">
-      <div id="signinError" class="auth-error-msg"></div>
-
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">mail</span>
-        <input class="auth-input" id="signinEmail" type="email" placeholder="Email address" autocomplete="email"/>
-      </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">lock</span>
-        <input class="auth-input" id="signinPassword" type="password" placeholder="Password" autocomplete="current-password"/>
-        <button class="auth-pw-toggle" onclick="togglePwVisibility('signinPassword', this)" type="button">
-          <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
-        </button>
-      </div>
-
-      <button class="btn-auth" onclick="handleSignIn()">
-        <span class="material-symbols-outlined" style="font-size:20px;">login</span>
-        Sign In
-      </button>
-
-      <div class="auth-switch-link">
-        Don't have an account? <span onclick="switchAuthTab('register')">Register now</span>
-      </div>
-    </div>
-
-    <!-- ── REGISTER VIEW ── -->
-    <div class="auth-view" id="viewRegister">
-      <div id="registerError" class="auth-error-msg"></div>
-
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">person</span>
-        <input class="auth-input" id="regName" type="text" placeholder="Full name" autocomplete="name"/>
-      </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">mail</span>
-        <input class="auth-input" id="regEmail" type="email" placeholder="Email address" autocomplete="email"/>
-      </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">lock</span>
-        <input class="auth-input" id="regPassword" type="password" placeholder="Password (min 6 chars)" autocomplete="new-password" oninput="checkPwStrength(this.value)"/>
-        <button class="auth-pw-toggle" onclick="togglePwVisibility('regPassword', this)" type="button">
-          <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
-        </button>
-      </div>
-      <div style="margin-bottom:12px;">
-        <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwStrengthFill"></div></div>
-        <p class="pw-strength-label" id="pwStrengthLabel" style="color:#bdc9c8;">Enter a password</p>
-      </div>
-      <div class="auth-input-wrap">
-        <span class="material-symbols-outlined auth-input-icon">lock_reset</span>
-        <input class="auth-input" id="regConfirm" type="password" placeholder="Confirm password" autocomplete="new-password"/>
-        <button class="auth-pw-toggle" onclick="togglePwVisibility('regConfirm', this)" type="button">
-          <span class="material-symbols-outlined" style="font-size:20px;">visibility</span>
-        </button>
-      </div>
-
-      <button class="btn-auth" onclick="handleRegister()">
-        <span class="material-symbols-outlined" style="font-size:20px;">person_add</span>
-        Create Account
-      </button>
-
-      <div class="auth-switch-link">
-        Already have an account? <span onclick="switchAuthTab('signin')">Sign in</span>
-      </div>
-    </div>
-
-  </div>
-</div>
-
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -580,15 +391,15 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- APP SHELL (hidden until logged in) -->
-<div class="app-shell" id="appShell" style="display:none;">
+<!-- APP SHELL -->
+<div class="app-shell">
 
   <!-- SIDEBAR (desktop) -->
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-mark">TF</div>
       <div>
-        <div class="logo-text">Mong's Finance</div>
+        <div class="logo-text">Mong's Finance Report</div>
         <div class="logo-sub" id="sidebarMode">Personal Mode</div>
       </div>
     </div>
@@ -639,23 +450,23 @@ tailwind.config = {
       <!-- ══════════ HOME ══════════ -->
       <div class="page active" id="page-home">
         <div class="page-title">
-          <p style="color:#006565;font-size:13px;font-weight:600;margin-bottom:4px;" id="homeGreeting">Welcome back 👋</p>
+          <p style="color:#006565;font-size:13px;font-weight:600;margin-bottom:4px;">Welcome back 👋</p>
           <h2>Your <em>Financial</em><br>Overview</h2>
         </div>
 
         <!-- Balance Card -->
         <div class="grad-card" style="margin-bottom:1rem;">
           <p style="color:rgba(255,255,255,0.65);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Net Balance</p>
-          <p style="font-size:clamp(1.4rem,6vw,2.2rem);font-weight:700;font-family:'DM Serif Display',serif;margin-bottom:1rem;word-break:break-all;" id="homeTotalBalance">IDR0.00</p>
+          <p style="font-size:clamp(1.4rem,6vw,2.2rem);font-weight:700;font-family:'DM Serif Display',serif;margin-bottom:1rem;word-break:break-all;" id="homeTotalBalance">IDR26,242,221.00</p>
           <div style="display:flex;gap:1.5rem;">
             <div>
               <p style="color:rgba(255,255,255,0.55);font-size:11px;">Income</p>
-              <p style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">arrow_upward</span><span id="homeTotalIncome">IDR0.00</span></p>
+              <p style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">arrow_upward</span><span id="homeTotalIncome">IDR12,235,200.00</span></p>
             </div>
             <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
             <div>
               <p style="color:rgba(255,255,255,0.55);font-size:11px;">Expenses</p>
-              <p style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">arrow_downward</span><span id="homeTotalExpense">IDR0.00</span></p>
+              <p style="font-weight:700;font-size:15px;display:flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">arrow_downward</span><span id="homeTotalExpense">IDR22,123,750.00</span></p>
             </div>
           </div>
         </div>
@@ -690,13 +501,19 @@ tailwind.config = {
 
       <!-- ══════════ SPLIT BILL ══════════ -->
       <div class="page" id="page-split">
+
+        <!-- Step: Setup -->
         <div class="split-step active" id="step-setup">
           <div class="page-title">
             <h2>Split <em>Bill</em></h2>
             <p>Divide costs with precision.</p>
           </div>
+
+          <!-- Bill Amounts -->
           <div class="card-section" style="margin-bottom:1rem;">
             <div class="section-step"><div class="step-num">1</div><p style="font-weight:700;">Bill Amounts</p></div>
+
+            <!-- Subtotal (optional) -->
             <div style="margin-bottom:12px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                 <label class="field-label" style="margin:0;">Subtotal (before tax) <span style="color:#6e7979;font-weight:400;text-transform:none;font-size:11px;">— optional</span></label>
@@ -709,6 +526,8 @@ tailwind.config = {
                 </div>
               </div>
             </div>
+
+            <!-- Tax (optional) -->
             <div style="margin-bottom:12px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                 <label class="field-label" style="margin:0;">Tax / Service Charge <span style="color:#6e7979;font-weight:400;text-transform:none;font-size:11px;">— optional</span></label>
@@ -734,19 +553,25 @@ tailwind.config = {
                 <p style="font-size:12px;color:#3e4949;margin-top:6px;">Tax amount: <strong id="taxAmtDisplay">IDR0.00</strong></p>
               </div>
             </div>
+
+            <!-- Grand Total -->
             <div>
               <label class="field-label">Grand Total <span style="color:#6e7979;font-weight:400;text-transform:none;font-size:11px;">— required</span></label>
-              <div style="display:flex;align-items:center;gap:6px;background:white;border:1.5px solid #c6e9e9;border-radius:12px;padding:0 14px;">
+              <div style="display:flex;align-items:center;gap:6px;background:white;border:1.5px solid #c6e9e9;border-radius:12px;padding:0 14px;" id="grandTotalBorder">
                 <span style="font-weight:700;color:#006565;font-size:18px;">IDR</span>
                 <input class="fa-input-lg num-input" id="grandTotalAmt" type="text" inputmode="numeric" placeholder="0" oninput="fmtNumInput(this);onBillInput('grand')" style="border:none;padding-left:4px;box-shadow:none;"/>
               </div>
               <p style="font-size:12px;color:#3e4949;margin-top:6px;" id="grandTotalNote"></p>
             </div>
+
+            <!-- Description -->
             <div style="margin-top:12px;">
               <label class="field-label">Description</label>
               <input class="fa-input" id="billDesc" type="text" placeholder="e.g. Dinner at The Glass House"/>
             </div>
           </div>
+
+          <!-- Participants -->
           <div class="card-section" style="margin-bottom:1rem;">
             <div class="section-step"><div class="step-num">2</div><p style="font-weight:700;">Participants</p></div>
             <div id="participantChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
@@ -754,6 +579,8 @@ tailwind.config = {
               <span class="material-symbols-outlined" style="font-size:18px;">add</span> Add Participant
             </button>
           </div>
+
+          <!-- Split Method -->
           <div class="card-section" style="margin-bottom:1rem;">
             <div class="section-step"><div class="step-num">3</div><p style="font-weight:700;">Split Method</p></div>
             <div class="two-col" id="methodGrid" style="gap:10px;">
@@ -779,91 +606,98 @@ tailwind.config = {
               </div>
             </div>
           </div>
+
+          <!-- Preview -->
           <div class="grad-card" style="margin-bottom:1rem;">
-            <p style="color:rgba(255,255,255,0.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Calculation Preview</p>
-            <div id="previewRows" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;"></div>
-            <div style="border-top:1px solid rgba(255,255,255,0.2);padding-top:12px;">
-              <p style="color:rgba(255,255,255,0.7);font-size:11px;margin-bottom:2px;">Each pays (equal)</p>
-              <p style="font-size:1.6rem;font-weight:700;font-family:'DM Serif Display',serif;" id="previewEach">IDR0.00</p>
+            <p style="color:rgba(255,255,255,0.65);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;">Calculation Preview</p>
+            <div id="previewRows" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
+            <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="color:rgba(255,255,255,0.8);font-size:14px;">Each pays (equal)</span>
+              <span style="font-size:clamp(1.2rem,5vw,1.6rem);font-weight:700;font-family:'DM Serif Display',serif;word-break:break-all;" id="previewEach">IDR0.00</span>
             </div>
           </div>
-          <button class="btn-primary" onclick="proceedToMethod()">Continue to Split <span class="material-symbols-outlined">arrow_forward</span></button>
+
+          <button onclick="proceedToMethod()" class="btn-primary">
+            Continue to Split <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
         </div>
 
-        <!-- Equal Step -->
+        <!-- Step: Equal -->
         <div class="split-step" id="step-equal">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span></button>
-            <div><h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;">Equal Split</h2><p style="font-size:13px;color:#6e7979;">Divided equally among all participants</p></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
+            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined">arrow_back</span></button>
+            <div><h2 class="hl" style="font-size:1.6rem;">Equal Split</h2><p style="font-size:12px;color:#3e4949;">Divided equally among all participants</p></div>
           </div>
           <div class="grad-card-sm" style="margin-bottom:1rem;text-align:center;">
             <p style="color:rgba(255,255,255,0.7);font-size:12px;margin-bottom:4px;">Each person pays</p>
-            <p style="font-size:1.8rem;font-weight:700;font-family:'DM Serif Display',serif;" id="equalEach">IDR0.00</p>
+            <p style="font-size:clamp(1.5rem,6vw,2rem);font-weight:700;font-family:'DM Serif Display',serif;word-break:break-all;" id="equalEach">IDR0.00</p>
             <p style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;" id="equalFormula"></p>
           </div>
-          <div id="equalList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;"></div>
-          <button class="btn-primary" onclick="confirmSplit()">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
+          <div id="equalList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;"></div>
+          <button onclick="confirmSplit()" class="btn-primary">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
         </div>
 
-        <!-- Percentage Step -->
+        <!-- Step: Percentage -->
         <div class="split-step" id="step-pct">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span></button>
-            <div><h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;">Percentage Split</h2><p style="font-size:13px;color:#6e7979;">Must total 100%</p></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
+            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined">arrow_back</span></button>
+            <div><h2 class="hl" style="font-size:1.6rem;">Percentage Split</h2><p style="font-size:12px;color:#3e4949;">Must total 100%</p></div>
           </div>
-          <div style="background:#f0fffe;border-radius:14px;padding:14px;margin-bottom:1rem;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-              <p style="font-size:13px;font-weight:600;">Total Allocated</p>
-              <p style="font-size:14px;font-weight:700;color:#006565;" id="pctTotalLabel">0%</p>
+          <div class="card" style="margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:14px;font-weight:600;">Total Allocated</span>
+              <span style="font-size:18px;font-weight:700;" id="pctTotalLabel">0%</span>
             </div>
             <div class="prog-track"><div class="prog-fill" id="pctProgFill" style="width:0%;background:#006565;"></div></div>
-            <p style="color:#ba1a1a;font-size:12px;margin-top:6px;display:none;" id="pctErr">Total must equal 100%</p>
+            <p style="font-size:12px;color:#ba1a1a;margin-top:6px;display:none;" id="pctErr">Total must equal 100%</p>
           </div>
           <div id="pctInputList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;"></div>
-          <div class="grad-card-sm" style="margin-bottom:1rem;">
-            <p style="color:rgba(255,255,255,0.7);font-size:11px;margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Summary</p>
+          <div class="grad-card-sm" style="margin-bottom:1rem;" id="pctPreviewCard">
+            <p style="color:rgba(255,255,255,0.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Summary</p>
             <div id="pctPreviewList" style="display:flex;flex-direction:column;gap:6px;"></div>
           </div>
-          <button class="btn-primary" onclick="confirmPct()">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
+          <button onclick="confirmPct()" class="btn-primary">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
         </div>
 
-        <!-- Exact Step -->
+        <!-- Step: Exact -->
         <div class="split-step" id="step-exact">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span></button>
-            <div><h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;">Exact Amounts</h2><p style="font-size:13px;color:#6e7979;">Enter the exact amount per person</p></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
+            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined">arrow_back</span></button>
+            <div><h2 class="hl" style="font-size:1.6rem;">Exact Amounts</h2><p style="font-size:12px;color:#3e4949;">Enter the exact amount per person</p></div>
           </div>
-          <div style="background:#f0fffe;border-radius:14px;padding:14px;margin-bottom:1rem;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-              <p style="font-size:13px;font-weight:600;">Remaining to allocate</p>
-              <p style="font-size:14px;font-weight:700;" id="exactRemLabel">IDR0.00</p>
+          <div class="card" style="margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:14px;font-weight:600;">Remaining to allocate</span>
+              <span style="font-size:18px;font-weight:700;" id="exactRemLabel">IDR0.00</span>
             </div>
             <div class="prog-track"><div class="prog-fill" id="exactProgFill" style="width:0%;background:#006565;"></div></div>
-            <p style="color:#ba1a1a;font-size:12px;margin-top:6px;display:none;" id="exactErr">Total exceeds the bill amount</p>
+            <p style="font-size:12px;color:#ba1a1a;margin-top:6px;display:none;" id="exactErr">Total exceeds the bill amount</p>
           </div>
-          <div id="exactInputList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;"></div>
-          <button class="btn-primary" onclick="confirmExact()">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
+          <div id="exactInputList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;"></div>
+          <button onclick="confirmExact()" class="btn-primary">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
         </div>
 
-        <!-- By Item Step -->
+        <!-- Step: By Item -->
         <div class="split-step" id="step-byitem">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;">
-            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span></button>
-            <div><h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;">By Item</h2><p style="font-size:13px;color:#6e7979;">Assign items to participants</p></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
+            <button class="back-btn" onclick="backToSetup()"><span class="material-symbols-outlined">arrow_back</span></button>
+            <div><h2 class="hl" style="font-size:1.6rem;">By Item</h2><p style="font-size:12px;color:#3e4949;">Assign items to participants</p></div>
           </div>
-          <button onclick="openAddItemModal()" style="display:flex;align-items:center;gap:6px;border:2px dashed #bdc9c8;padding:10px 18px;border-radius:999px;background:none;cursor:pointer;font-size:13px;font-weight:600;color:#3e4949;margin-bottom:1rem;transition:all 0.15s;" onmouseover="this.style.background='white'" onmouseout="this.style.background='none'">
-            <span class="material-symbols-outlined" style="font-size:18px;">add</span> Add Item
+          <div id="itemListEl" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+          <button onclick="openAddItemModal()" style="width:100%;border:2px dashed #bdc9c8;border-radius:14px;padding:14px;background:none;cursor:pointer;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s;margin-bottom:1rem;" onmouseover="this.style.background='white'" onmouseout="this.style.background='none'">
+            <span class="material-symbols-outlined">add</span> Add Item
           </button>
-          <div id="itemListEl" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;"></div>
-          <div class="grad-card-sm" style="margin-bottom:1rem;" id="byItemSummaryCard">
-            <p style="color:rgba(255,255,255,0.7);font-size:11px;margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Amount per Person</p>
+          <!--bagian summary pembagian split-->
+          <div class="grad-card-sm" style="margin-bottom:10px;" id="byItemSummaryCard">
+            <p style="color:rgba(255,255,255,0.7);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">Amount per Person</p>
             <div id="byItemSummaryList" style="display:flex;flex-direction:column;gap:6px;"></div>
-            <p style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:8px;display:none;" id="byItemTaxInfo">
-              <span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle;">info</span>
-              Tax is distributed proportionally to each person's subtotal.
-            </p>
+            
           </div>
-          <button class="btn-primary" onclick="confirmSplit()">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
+          <div id="byItemTaxInfo" style="background:white;border-radius:12px;padding:12px 14px;margin-bottom:1rem;display:none;font-size:12px;color:#3e4949;">
+            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;color:#006565;">info</span>
+            Tax is distributed proportionally to each person's subtotal.
+          </div>
+          <button onclick="confirmSplit()" class="btn-primary">Confirm &amp; Save <span class="material-symbols-outlined">check_circle</span></button>
         </div>
       </div>
 
@@ -873,23 +707,31 @@ tailwind.config = {
           <h2>Add <em>Transaction</em></h2>
           <p>Record income or expense.</p>
         </div>
-        <div class="card" style="margin-bottom:1rem;">
-          <div style="display:flex;gap:8px;background:#f0fffe;border-radius:14px;padding:4px;margin-bottom:1.25rem;">
-            <button id="btnExpense" class="type-btn" style="background:#ba1a1a;color:white;" onclick="setTransType('expense')">Expense</button>
-            <button id="btnIncome" class="type-btn" style="background:white;color:#3e4949;" onclick="setTransType('income')">Income</button>
+        <div style="display:flex;gap:8px;margin-bottom:1.25rem;">
+          <button class="type-btn" id="btnExpense" onclick="setTransType('expense')" style="background:#ba1a1a;color:white;">Expense</button>
+          <button class="type-btn" id="btnIncome" onclick="setTransType('income')" style="background:white;color:#3e4949;border:1.5px solid #c6e9e9;">Income</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <label class="field-label">Amount</label>
+            <div style="display:flex;align-items:center;gap:6px;background:white;border:1.5px solid #c6e9e9;border-radius:12px;padding:0 14px;">
+              <span style="font-weight:700;color:#006565;font-size:18px;">IDR</span>
+              <input class="fa-input-lg num-input" id="addAmount" type="text" inputmode="numeric" placeholder="0" oninput="fmtNumInput(this)" style="border:none;padding-left:4px;box-shadow:none;"/>
+            </div>
           </div>
-          <label class="field-label">Amount</label>
-          <div style="display:flex;align-items:center;gap:6px;background:#f8fffe;border:1.5px solid #c6e9e9;border-radius:14px;padding:0 16px;margin-bottom:1rem;">
-            <span style="font-weight:700;color:#006565;font-size:20px;">IDR</span>
-            <input class="fa-input-lg num-input" id="addAmount" type="text" inputmode="numeric" placeholder="0" oninput="fmtNumInput(this)" style="border:none;box-shadow:none;padding-left:4px;"/>
+          <div>
+            <label class="field-label">Category</label>
+            <div id="catGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;"></div>
           </div>
-          <label class="field-label">Category</label>
-          <div id="catGrid" class="three-col" style="margin-bottom:1rem;gap:8px;"></div>
-          <label class="field-label">Description</label>
-          <input class="fa-input" id="addDesc" type="text" placeholder="What was this for?" style="margin-bottom:1rem;"/>
-          <label class="field-label">Date</label>
-          <input class="fa-input" id="addDate" type="date" style="margin-bottom:1.25rem;"/>
-          <button class="btn-primary" onclick="saveTransaction()">Save Transaction <span class="material-symbols-outlined">save</span></button>
+          <div>
+            <label class="field-label">Description</label>
+            <input class="fa-input" id="addDesc" type="text" placeholder="Transaction note..."/>
+          </div>
+          <div>
+            <label class="field-label">Date</label>
+            <input class="fa-input" id="addDate" type="date"/>
+          </div>
+          <button onclick="saveTransaction()" class="btn-primary">Save Transaction <span class="material-symbols-outlined">save</span></button>
         </div>
       </div>
 
@@ -899,28 +741,33 @@ tailwind.config = {
           <h2><em>Financial</em> Reports</h2>
           <p>Analyze your spending patterns.</p>
         </div>
-        <div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:1.25rem;" class="no-scroll">
-          <button class="period-btn active" onclick="setPeriod(this,'7d')">7 Days</button>
-          <button class="period-btn" onclick="setPeriod(this,'1m')">1 Month</button>
-          <button class="period-btn" onclick="setPeriod(this,'3m')">3 Months</button>
-          <button class="period-btn" onclick="setPeriod(this,'1y')">1 Year</button>
+        <!-- Period -->
+        <div style="display:flex;gap:8px;margin-bottom:1.25rem;overflow-x:auto;" class="no-scroll">
+          <button class="period-btn active" id="period-7d" onclick="setPeriod(this,'7d')">7 Days</button>
+          <button class="period-btn" id="period-1m" onclick="setPeriod(this,'1m')">1 Month</button>
+          <button class="period-btn" id="period-3m" onclick="setPeriod(this,'3m')">3 Months</button>
+          <button class="period-btn" id="period-1y" onclick="setPeriod(this,'1y')">1 Year</button>
         </div>
-        <div class="two-col" id="reportSummaryCards" style="margin-bottom:1.25rem;"></div>
+        <!-- Summary cards -->
+        <div class="two-col" style="margin-bottom:1.25rem;" id="reportSummaryCards"></div>
+        <!-- Bar chart -->
         <div class="card" style="margin-bottom:1.25rem;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
             <p style="font-weight:700;font-size:15px;" id="chartTitle">Daily Spending</p>
-            <p style="font-size:12px;color:#6e7979;" id="chartPeriodLabel">Last 7 days</p>
+            <span class="badge" style="background:#d2f5f4;color:#006565;" id="chartPeriodLabel">Last 7 days</span>
           </div>
           <div class="bar-chart" id="barChart"></div>
         </div>
+        <!-- Category breakdown -->
         <div class="card" style="margin-bottom:1.25rem;">
           <p style="font-weight:700;font-size:15px;margin-bottom:14px;">Spending by Category</p>
           <div id="catBreakdown" style="display:flex;flex-direction:column;gap:12px;"></div>
         </div>
+        <!-- Transaction list -->
         <div class="card">
           <p style="font-weight:700;font-size:15px;margin-bottom:14px;">All Transactions</p>
           <div id="reportTxList" style="display:flex;flex-direction:column;gap:10px;"></div>
-          <p style="text-align:center;color:#6e7979;font-size:13px;margin-top:12px;display:none;" id="reportEmptyMsg">No transactions recorded yet.</p>
+          <p style="text-align:center;color:#6e7979;font-size:13px;margin-top:12px;" id="reportEmptyMsg" style="display:none;">No transactions recorded yet.</p>
         </div>
       </div>
 
@@ -928,10 +775,10 @@ tailwind.config = {
       <div class="page" id="page-profile">
         <div style="display:flex;flex-direction:column;align-items:center;padding:1rem 0 1.5rem;">
           <div class="avatar-ring" style="margin-bottom:10px;">
-            <div style="width:72px;height:72px;border-radius:50%;background:#006565;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;font-weight:700;font-family:'DM Serif Display',serif;" id="profileAvatar">?</div>
+            <div style="width:72px;height:72px;border-radius:50%;background:#006565;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;font-weight:700;font-family:'DM Serif Display',serif;">TF</div>
           </div>
-          <h2 class="hl" style="font-size:1.3rem;" id="profileName">—</h2>
-          <p style="color:#6e7979;font-size:13px;" id="profileEmail">—</p>
+          <h2 class="hl" style="font-size:1.3rem;">Mong's Finance Report</h2>
+          <p style="color:#6e7979;font-size:13px;">Mong's Finance Report</p>
           <span class="badge" style="background:#d2f5f4;color:#006565;margin-top:6px;" id="profileModeBadge">Personal</span>
           <span class="badge" style="background:#ffdad6;color:#ba1a1a;margin-top:4px;" id="profileNotifBadge">Notif Off</span>
         </div>
@@ -965,14 +812,14 @@ tailwind.config = {
             </div>
             <span class="material-symbols-outlined" style="color:#6e7979;">chevron_right</span>
           </div>
-          <div class="stat-card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="authLogout()" onmouseover="this.style.background='#ffdad6'" onmouseout="this.style.background='white'">
+          <div class="stat-card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onmouseover="this.style.background='#ffdad6'" onmouseout="this.style.background='white'">
             <span class="material-symbols-outlined" style="color:#ba1a1a;">logout</span>
             <p style="font-weight:600;font-size:14px;color:#ba1a1a;">Sign Out</p>
           </div>
         </div>
       </div>
 
-    </main>
+    </main><!-- /main -->
 
     <!-- BOTTOM NAV (mobile) -->
     <nav class="bottom-nav">
@@ -993,146 +840,10 @@ tailwind.config = {
       </button>
     </nav>
 
-  </div>
+  </div><!-- /content wrapper -->
 </div><!-- /app-shell -->
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// AUTH SYSTEM
-// ═══════════════════════════════════════════════════════════
-
-// Simple hash — not cryptographic, just avoids plain-text passwords in storage
-function hashPassword(pw) {
-  let h = 0;
-  for (let i = 0; i < pw.length; i++) { h = (Math.imul(31, h) + pw.charCodeAt(i)) | 0; }
-  return h.toString(36) + pw.length.toString(36) + btoa(pw.slice(0,3)).replace(/=/g,'');
-}
-
-function getUsers()    { return JSON.parse(localStorage.getItem('mong_users')  || '{}'); }
-function getSession()  { return JSON.parse(localStorage.getItem('mong_session')|| 'null'); }
-function saveUsers(u)  { localStorage.setItem('mong_users', JSON.stringify(u)); }
-function saveSession(s){ localStorage.setItem('mong_session', JSON.stringify(s)); }
-
-function switchAuthTab(tab) {
-  ['signin','register'].forEach(t => {
-    document.getElementById('tab'+(t==='signin'?'SignIn':'Register')).classList.toggle('active', t===tab);
-    document.getElementById('view'+(t==='signin'?'SignIn':'Register')).classList.toggle('active', t===tab);
-  });
-  document.getElementById('signinError').classList.remove('show');
-  document.getElementById('registerError').classList.remove('show');
-}
-
-function togglePwVisibility(inputId, btn) {
-  const input = document.getElementById(inputId);
-  const icon  = btn.querySelector('.material-symbols-outlined');
-  if (input.type === 'password') { input.type = 'text';     icon.textContent = 'visibility_off'; }
-  else                           { input.type = 'password'; icon.textContent = 'visibility'; }
-}
-
-function checkPwStrength(pw) {
-  const fill  = document.getElementById('pwStrengthFill');
-  const label = document.getElementById('pwStrengthLabel');
-  let score = 0;
-  if (pw.length >= 6)  score++;
-  if (pw.length >= 10) score++;
-  if (/[A-Z]/.test(pw)) score++;
-  if (/[0-9]/.test(pw)) score++;
-  if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const levels = [
-    { w:'0%',   c:'#bdc9c8', t:'Enter a password' },
-    { w:'25%',  c:'#ba1a1a', t:'Weak' },
-    { w:'50%',  c:'#e67e00', t:'Fair' },
-    { w:'75%',  c:'#856404', t:'Good' },
-    { w:'90%',  c:'#1a6b3c', t:'Strong' },
-    { w:'100%', c:'#006565', t:'Very Strong' },
-  ];
-  const l = levels[Math.min(score, 5)];
-  fill.style.width      = pw ? l.w : '0%';
-  fill.style.background = l.c;
-  label.textContent     = pw ? l.t : 'Enter a password';
-  label.style.color     = l.c;
-}
-
-function showAuthError(viewId, msg) {
-  const el = document.getElementById(viewId);
-  el.textContent = msg;
-  el.classList.add('show');
-}
-
-function handleSignIn() {
-  const email = document.getElementById('signinEmail').value.trim().toLowerCase();
-  const pw    = document.getElementById('signinPassword').value;
-  document.getElementById('signinError').classList.remove('show');
-
-  if (!email || !pw) { showAuthError('signinError', 'Please fill in all fields.'); return; }
-
-  const users = getUsers();
-  if (!users[email]) { showAuthError('signinError', 'No account found with this email.'); return; }
-  if (users[email].passwordHash !== hashPassword(pw)) { showAuthError('signinError', 'Incorrect password. Please try again.'); return; }
-
-  const session = { email, name: users[email].name };
-  saveSession(session);
-  launchApp(session);
-}
-
-function handleRegister() {
-  const name    = document.getElementById('regName').value.trim();
-  const email   = document.getElementById('regEmail').value.trim().toLowerCase();
-  const pw      = document.getElementById('regPassword').value;
-  const confirm = document.getElementById('regConfirm').value;
-  document.getElementById('registerError').classList.remove('show');
-
-  if (!name || !email || !pw || !confirm) { showAuthError('registerError', 'Please fill in all fields.'); return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError('registerError', 'Please enter a valid email address.'); return; }
-  if (pw.length < 6) { showAuthError('registerError', 'Password must be at least 6 characters.'); return; }
-  if (pw !== confirm) { showAuthError('registerError', 'Passwords do not match.'); return; }
-
-  const users = getUsers();
-  if (users[email]) { showAuthError('registerError', 'An account with this email already exists.'); return; }
-
-  users[email] = { name, email, passwordHash: hashPassword(pw), createdAt: new Date().toISOString() };
-  saveUsers(users);
-
-  const session = { email, name };
-  saveSession(session);
-  launchApp(session);
-}
-
-function authLogout() {
-  localStorage.removeItem('mong_session');
-  // Reset app state
-  S.transactions = [];
-  S.page = 'home';
-  S.businessMode = false;
-  // Show auth screen, hide app
-  const auth = document.getElementById('authScreen');
-  const app  = document.getElementById('appShell');
-  auth.style.display = 'flex';
-  auth.style.opacity = '1';
-  app.style.display  = 'none';
-  // Clear signin form
-  document.getElementById('signinEmail').value    = '';
-  document.getElementById('signinPassword').value = '';
-  switchAuthTab('signin');
-  toast('👋 Signed out successfully');
-}
-
-function launchApp(session) {
-  // Animate auth screen out
-  const authEl = document.getElementById('authScreen');
-  authEl.classList.add('hiding');
-  setTimeout(() => { authEl.style.display = 'none'; }, 400);
-
-  // Show app
-  document.getElementById('appShell').style.display = '';
-
-  // Load this user's data
-  loadFromStorage(session.email);
-
-  // Boot dashboard
-  initApp(session);
-}
-
 // ═══════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════
@@ -1143,14 +854,23 @@ const S = {
   transType: 'expense',
   selectedCat: null,
   currentPeriod: '7d',
+  // Split
   participants: [{ name: 'You', initials: 'ME', isMe: true }],
   method: 'equal',
   taxEnabled: false,
-  taxType: 'pct',
+  taxType: 'pct', // 'pct' | 'amt'
   subtotalEnabled: false,
   items: [],
-  transactions: [],
-  currentUser: null,
+  // Transactions (persisted in memory)
+  transactions: [
+    { type:'expense', cat:'Food', desc:'Dinner at The Glass House', amount:150000, date:'2025-04-08' },
+    { type:'income',  cat:'Salary', desc:'Monthly Salary', amount:7250000, date:'2025-04-05' },
+    { type:'expense', cat:'Transport', desc:'Grab to Office', amount:31500, date:'2025-04-07' },
+    { type:'expense', cat:'Shopping', desc:'Grocery Run', amount:335000, date:'2025-04-06' },
+    { type:'expense', cat:'Food', desc:'Lunch with team', amount:215200, date:'2025-04-04' },
+    { type:'expense', cat:'Bills', desc:'Electricity Bill', amount:115000, date:'2025-04-03' },
+    { type:'expense', cat:'Entertainment', desc:'Netflix + Spotify', amount:280000, date:'2025-04-02' },
+  ],
 };
 
 const CAT_ICONS = {
@@ -1162,69 +882,27 @@ const QUICK_CONTACTS = ['Alex'];
 const pageTitles = { home:'Home', split:'Split Bill', add:'Add Transaction', report:'Reports', profile:'Profile' };
 
 // ═══════════════════════════════════════════════════════════
-// STORAGE (per-user)
-// ═══════════════════════════════════════════════════════════
-function storageKey(email) { return 'mong_tx_' + (email || 'guest'); }
-
-function saveToStorage() {
-  if (!S.currentUser) return;
-  localStorage.setItem(storageKey(S.currentUser.email), JSON.stringify(S.transactions));
-}
-
-function loadFromStorage(email) {
-  const saved = localStorage.getItem(storageKey(email));
-  S.transactions = saved ? JSON.parse(saved) : [];
-}
-
-// ═══════════════════════════════════════════════════════════
-// INIT APP (called after login)
-// ═══════════════════════════════════════════════════════════
-function initApp(session) {
-  S.currentUser = session;
-  // Reset split state for fresh session
-  S.participants = [{ name: session.name.split(' ')[0] || 'You', initials: initials(session.name), isMe: true }];
-  S.method = 'equal'; S.taxEnabled = false; S.subtotalEnabled = false; S.items = [];
-
-  buildQuickContacts();
-  renderChips();
-  renderHome();
-  renderCatGrid();
-  document.getElementById('addDate').value = today();
-  updatePreview();
-  navigateTo('home');
-
-  // Notifications
-  const toggle = document.getElementById('notifToggleMob');
-  if (toggle) toggle.classList.toggle('on', S.notifEnabled);
-  const status = document.getElementById('notifStatus');
-  if (status) status.textContent = S.notifEnabled ? 'Active' : 'Inactive';
-  const nb = document.getElementById('profileNotifBadge');
-  if (nb) {
-    nb.textContent     = S.notifEnabled ? 'On' : 'Off';
-    nb.style.background = S.notifEnabled ? '#d4f5e2' : '#ffdad6';
-    nb.style.color      = S.notifEnabled ? '#1a6b3c' : '#ba1a1a';
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════
 function navigateTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
+  // mobile nav
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const bn = document.getElementById('bnav-' + page);
   if (bn) bn.classList.add('active');
+  // sidebar nav
   document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
   const sn = document.getElementById('snav-' + page);
   if (sn) sn.classList.add('active');
+  // titles
   document.getElementById('mobileTitle').textContent = pageTitles[page];
   S.page = page;
   window.scrollTo(0, 0);
-  if (page === 'split')   { backToSetup(); renderChips(); updatePreview(); }
-  if (page === 'add')     { document.getElementById('addDate').value = today(); renderCatGrid(); }
-  if (page === 'report')  renderReport();
-  if (page === 'home')    renderHome();
+  if (page === 'split') { backToSetup(); renderChips(); updatePreview(); }
+  if (page === 'add') { document.getElementById('addDate').value = today(); renderCatGrid(); }
+  if (page === 'report') renderReport();
+  if (page === 'home') renderHome();
   if (page === 'profile') renderProfile();
 }
 
@@ -1234,17 +912,20 @@ function navigateTo(page) {
 function fmt(n) { return 'IDR' + (+n).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
 function today() { return new Date().toISOString().split('T')[0]; }
 function initials(name) { return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-function randColor(i) { const c=['#d2f5f4','#ffdad6','#fff3cd','#d4f5e2','#e8d5f5']; return c[i%c.length]; }
-function randTextColor(i) { const c=['#006565','#ba1a1a','#856404','#1a6b3c','#6b1a9c']; return c[i%c.length]; }
+function randColor(i) { const c=['#d2f5f4','#ffdad6','#fff3cd','#d4f5e2','#e8d5f5']; return c[i % c.length]; }
+function randTextColor(i) { const c=['#006565','#ba1a1a','#856404','#1a6b3c','#6b1a9c']; return c[i % c.length]; }
+
+// Format number input with thousand separators as user types
 function fmtNumInput(el) {
-  const raw = el.value.replace(/[^0-9]/g,'');
-  if (raw==='') { el.value=''; return; }
-  el.value = parseInt(raw,10).toLocaleString('en-US');
+  const raw = el.value.replace(/[^0-9]/g, '');
+  if (raw === '') { el.value = ''; return; }
+  el.value = parseInt(raw, 10).toLocaleString('en-US');
 }
+// Parse formatted number input back to a number
 function parseNumInput(id) {
   const el = document.getElementById(id);
   if (!el) return 0;
-  return parseFloat(el.value.replace(/,/g,'')) || 0;
+  return parseFloat(el.value.replace(/,/g, '')) || 0;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1252,65 +933,94 @@ function parseNumInput(id) {
 // ═══════════════════════════════════════════════════════════
 function toggleField(id) {
   const field = document.getElementById(id);
+  const tog = id === 'subtotalField' ? document.getElementById('toggleSubtotal') : null;
   if (field) {
-    const hidden = field.style.display==='none' || field.style.display==='';
+    const hidden = field.style.display === 'none' || field.style.display === '';
     field.style.display = hidden ? 'block' : 'none';
-    if (id==='subtotalField') {
+    if (id === 'subtotalField') {
       S.subtotalEnabled = hidden;
       document.getElementById('toggleSubtotal').classList.toggle('on', hidden);
     }
     updatePreview();
   }
 }
+
 function toggleTax() {
   S.taxEnabled = !S.taxEnabled;
   document.getElementById('taxToggle').classList.toggle('on', S.taxEnabled);
   document.getElementById('taxField').style.display = S.taxEnabled ? 'block' : 'none';
   updatePreview();
 }
+
 function setTaxType(type) {
   S.taxType = type;
-  document.getElementById('taxBtnPct').classList.toggle('active', type==='pct');
-  document.getElementById('taxBtnAmt').classList.toggle('active', type==='amt');
-  document.getElementById('taxPctInput').style.display = type==='pct' ? 'block' : 'none';
-  document.getElementById('taxAmtInput').style.display = type==='amt' ? 'block' : 'none';
+  document.getElementById('taxBtnPct').classList.toggle('active', type === 'pct');
+  document.getElementById('taxBtnAmt').classList.toggle('active', type === 'amt');
+  document.getElementById('taxPctInput').style.display = type === 'pct' ? 'block' : 'none';
+  document.getElementById('taxAmtInput').style.display = type === 'amt' ? 'block' : 'none';
   updatePreview();
 }
+
 function getTaxAmount() {
   if (!S.taxEnabled) return 0;
   const subtotal = parseNumInput('subtotalAmt');
-  const grand    = parseNumInput('grandTotalAmt');
-  const base = S.subtotalEnabled && subtotal>0 ? subtotal : grand;
-  return S.taxType==='pct' ? base * parseNumInput('taxPctVal') / 100 : parseNumInput('taxAmtVal');
+  const grand = parseNumInput('grandTotalAmt');
+  const base = S.subtotalEnabled && subtotal > 0 ? subtotal : grand;
+  if (S.taxType === 'pct') {
+    const pct = parseNumInput('taxPctVal');
+    return base * pct / 100;
+  } else {
+    return parseNumInput('taxAmtVal');
+  }
 }
-function getGrandTotal() { return parseNumInput('grandTotalAmt'); }
+
+function getGrandTotal() {
+  return parseNumInput('grandTotalAmt');
+}
+
 function onBillInput(source) {
-  if (source!=='grand') {
-    const sub = parseNumInput('subtotalAmt'), tax = getTaxAmount();
-    if (S.subtotalEnabled && sub>0) {
-      const computed = sub+tax;
-      if (computed>0) document.getElementById('grandTotalAmt').value = Math.round(computed).toLocaleString('en-US');
+  if (source !== 'grand') {
+    const sub = parseNumInput('subtotalAmt');
+    const tax = getTaxAmount();
+    if (S.subtotalEnabled && sub > 0) {
+      const computed = sub + tax;
+      if (computed > 0) {
+        const el = document.getElementById('grandTotalAmt');
+        el.value = Math.round(computed).toLocaleString('en-US');
+      }
     }
   }
   updatePreview();
 }
+
 function updatePreview() {
-  const grand=getGrandTotal(), tax=getTaxAmount(), sub=S.subtotalEnabled?parseNumInput('subtotalAmt'):0;
-  const count=S.participants.length, each=count>0&&grand>0?grand/count:0;
+  const grand = getGrandTotal();
+  const tax = getTaxAmount();
+  const sub = S.subtotalEnabled ? parseNumInput('subtotalAmt') : 0;
+  const count = S.participants.length;
+  const each = count > 0 && grand > 0 ? grand / count : 0;
+
+  // Tax display
   document.getElementById('taxAmtDisplay').textContent = fmt(tax);
+
+  // Grand total note
   const note = document.getElementById('grandTotalNote');
-  note.textContent = (S.subtotalEnabled&&sub>0) ? `Subtotal ${fmt(sub)} + Tax ${fmt(tax)} = ${fmt(grand)}` : '';
+  if (S.subtotalEnabled && sub > 0) {
+    note.textContent = `Subtotal ${fmt(sub)} + Tax ${fmt(tax)} = ${fmt(grand)}`;
+  } else { note.textContent = ''; }
+
+  // Preview rows
   const rows = document.getElementById('previewRows');
   rows.innerHTML = '';
   const rowData = [];
-  if (S.subtotalEnabled&&sub>0) rowData.push(['Subtotal', fmt(sub)]);
-  if (S.taxEnabled&&tax>0)       rowData.push(['Tax', fmt(tax)]);
+  if (S.subtotalEnabled && sub > 0) rowData.push(['Subtotal', fmt(sub)]);
+  if (S.taxEnabled && tax > 0) rowData.push(['Tax', fmt(tax)]);
   rowData.push(['Grand Total', fmt(grand)]);
   rowData.push([`÷ ${count} person${count!==1?'s':''}`, '']);
-  rowData.forEach(([label,val]) => {
+  rowData.forEach(([label, val]) => {
     const row = document.createElement('div');
-    row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.1);';
-    row.innerHTML=`<span style="color:rgba(255,255,255,0.75);font-size:13px;">${label}</span><span style="color:white;font-weight:600;font-size:13px;">${val}</span>`;
+    row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.1);';
+    row.innerHTML = `<span style="color:rgba(255,255,255,0.75);font-size:13px;">${label}</span><span style="color:white;font-weight:600;font-size:13px;">${val}</span>`;
     rows.appendChild(row);
   });
   document.getElementById('previewEach').textContent = fmt(each);
@@ -1322,24 +1032,27 @@ function updatePreview() {
 function renderChips() {
   const c = document.getElementById('participantChips');
   c.innerHTML = '';
-  S.participants.forEach((p,i) => {
+  S.participants.forEach((p, i) => {
     const chip = document.createElement('div');
     chip.className = 'chip';
-    chip.style.background = p.isMe?'#006565':'white';
-    chip.style.color       = p.isMe?'white':'#002020';
-    chip.style.border      = p.isMe?'none':'1.5px solid #c6e9e9';
+    chip.style.background = p.isMe ? '#006565' : 'white';
+    chip.style.color = p.isMe ? 'white' : '#002020';
+    chip.style.border = p.isMe ? 'none' : '1.5px solid #c6e9e9';
     chip.innerHTML = `
       <div style="width:22px;height:22px;border-radius:50%;background:${p.isMe?'rgba(255,255,255,0.2)':'#d2f5f4'};display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:${p.isMe?'white':'#006565'};">${p.initials}</div>
       <span>${p.name}</span>
-      ${!p.isMe?`<span class="material-symbols-outlined" style="font-size:16px;cursor:pointer;color:#6e7979;" onclick="removeParticipant(${i})">close</span>`:''}
+      ${!p.isMe ? `<span class="material-symbols-outlined" style="font-size:16px;cursor:pointer;color:#6e7979;" onclick="removeParticipant(${i})">close</span>` : ''}
     `;
     c.appendChild(chip);
   });
   updatePreview();
 }
+
 function removeParticipant(i) { S.participants.splice(i,1); renderChips(); updatePreview(); }
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
 function addPersonFromModal() {
   const n = document.getElementById('newPersonName').value.trim();
   if (!n) return;
@@ -1347,18 +1060,21 @@ function addPersonFromModal() {
   document.getElementById('newPersonName').value = '';
   closeModal('modalAddPerson');
 }
+
 function addPerson(name) {
-  if (S.participants.find(p=>p.name.toLowerCase()===name.toLowerCase())) return;
+  if (S.participants.find(p => p.name.toLowerCase() === name.toLowerCase())) return;
   S.participants.push({ name, initials: initials(name), isMe: false });
   renderChips();
 }
+
+// Build quick contacts in modal
 function buildQuickContacts() {
   const c = document.getElementById('quickContacts');
   c.innerHTML = '';
   QUICK_CONTACTS.forEach(name => {
     const div = document.createElement('div');
-    div.style.cssText='flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;';
-    div.innerHTML=`<div style="width:44px;height:44px;border-radius:12px;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#006565;">${initials(name)}</div><span style="font-size:11px;font-weight:600;">${name}</span>`;
+    div.style.cssText = 'flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;';
+    div.innerHTML = `<div style="width:44px;height:44px;border-radius:12px;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#006565;">${initials(name)}</div><span style="font-size:11px;font-weight:600;">${name}</span>`;
     div.onclick = () => { addPerson(name); closeModal('modalAddPerson'); };
     c.appendChild(div);
   });
@@ -1370,40 +1086,45 @@ function buildQuickContacts() {
 function selectMethod(m) {
   S.method = m;
   ['equal','pct','exact','byitem'].forEach(k => {
-    const el = document.getElementById('mc-'+k);
-    el.classList.toggle('active', k===m);
+    const el = document.getElementById('mc-' + k);
+    el.classList.toggle('active', k === m);
     const icon = el.querySelector('.material-symbols-outlined');
-    icon.style.color = k===m?'white':'#006565';
+    icon.style.color = k === m ? 'white' : '#006565';
     const subs = el.querySelectorAll('p');
-    if (subs[1]) subs[1].style.color = k===m?'rgba(255,255,255,0.7)':'#3e4949';
+    if (subs[1]) subs[1].style.color = k === m ? 'rgba(255,255,255,0.7)' : '#3e4949';
   });
   updatePreview();
 }
+
 function proceedToMethod() {
-  if (getGrandTotal()<=0)           { toast('⚠ Enter the grand total first'); return; }
-  if (S.participants.length<2)      { toast('⚠ Add at least one more participant'); return; }
+  const grand = getGrandTotal();
+  if (grand <= 0) { toast('⚠ Enter the grand total first'); return; }
+  if (S.participants.length < 2) { toast('⚠ Add at least one more participant'); return; }
   backToSetup();
-  if      (S.method==='equal')  renderEqual();
-  else if (S.method==='pct')    renderPct();
-  else if (S.method==='exact')  renderExact();
-  else if (S.method==='byitem') renderByItem();
+  if (S.method === 'equal') renderEqual();
+  else if (S.method === 'pct') renderPct();
+  else if (S.method === 'exact') renderExact();
+  else if (S.method === 'byitem') renderByItem();
 }
+
 function backToSetup() {
-  document.querySelectorAll('.split-step').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.split-step').forEach(s => s.classList.remove('active'));
   document.getElementById('step-setup').classList.add('active');
 }
 
 // EQUAL
 function renderEqual() {
-  const grand=getGrandTotal(), count=S.participants.length, each=grand/count;
-  document.getElementById('equalEach').textContent    = fmt(each);
+  const grand = getGrandTotal();
+  const count = S.participants.length;
+  const each = grand / count;
+  document.getElementById('equalEach').textContent = fmt(each);
   document.getElementById('equalFormula').textContent = `${fmt(grand)} ÷ ${count} person${count!==1?'s':''}`;
   const list = document.getElementById('equalList');
   list.innerHTML = '';
-  S.participants.forEach((p,i) => {
+  S.participants.forEach((p, i) => {
     const div = document.createElement('div');
-    div.className='item-row';
-    div.innerHTML=`
+    div.className = 'item-row';
+    div.innerHTML = `
       <div style="width:36px;height:36px;border-radius:50%;background:${randColor(i)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:${randTextColor(i)};flex-shrink:0;">${p.initials}</div>
       <div style="flex:1;"><p style="font-weight:600;font-size:14px;">${p.name}</p><p style="font-size:12px;color:#6e7979;">1 of ${count} equal shares</p></div>
       <p style="font-weight:700;color:#006565;">${fmt(each)}</p>
@@ -1415,12 +1136,15 @@ function renderEqual() {
 
 // PERCENTAGE
 function renderPct() {
-  const base=Math.floor(100/S.participants.length), rem=100-base*S.participants.length;
-  const list=document.getElementById('pctInputList'); list.innerHTML='';
-  S.participants.forEach((p,i) => {
-    const v=i===0?base+rem:base, div=document.createElement('div');
-    div.className='card';
-    div.innerHTML=`
+  const base = Math.floor(100 / S.participants.length);
+  let rem = 100 - base * S.participants.length;
+  const list = document.getElementById('pctInputList');
+  list.innerHTML = '';
+  S.participants.forEach((p, i) => {
+    const v = i === 0 ? base + rem : base;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="width:32px;height:32px;border-radius:50%;background:${randColor(i)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:${randTextColor(i)};">${p.initials}</div>
@@ -1438,288 +1162,589 @@ function renderPct() {
   updatePctCalc();
   document.getElementById('step-pct').classList.add('active');
 }
-function syncPctSlider(i) { document.getElementById('pslider-'+i).value=document.getElementById('pct-'+i).value; updatePctCalc(); }
-function syncPctInput(i)  { document.getElementById('pct-'+i).value=document.getElementById('pslider-'+i).value; updatePctCalc(); }
+
+function syncPctSlider(i) { document.getElementById('pslider-'+i).value = document.getElementById('pct-'+i).value; updatePctCalc(); }
+function syncPctInput(i)  { document.getElementById('pct-'+i).value   = document.getElementById('pslider-'+i).value; updatePctCalc(); }
+
 function updatePctCalc() {
-  let total=0;
-  S.participants.forEach((_,i)=>{ total+=parseFloat(document.getElementById('pct-'+i)?.value)||0; });
-  const fill=document.getElementById('pctProgFill');
-  fill.style.width=Math.min(total,100)+'%'; fill.style.background=total>100?'#ba1a1a':'#006565';
-  document.getElementById('pctTotalLabel').textContent=total+'%';
-  document.getElementById('pctErr').style.display=total>100?'block':'none';
-  const grand=getGrandTotal(), pl=document.getElementById('pctPreviewList'); pl.innerHTML='';
-  S.participants.forEach((p,i)=>{ const pct=parseFloat(document.getElementById('pct-'+i)?.value)||0, amt=grand*pct/100; const row=document.createElement('div'); row.style.cssText='display:flex;justify-content:space-between;'; row.innerHTML=`<span style="color:rgba(255,255,255,0.8);font-size:13px;">${p.name} (${pct}%)</span><span style="color:white;font-weight:600;font-size:13px;">${fmt(amt)}</span>`; pl.appendChild(row); });
+  let total = 0;
+  S.participants.forEach((_, i) => { total += parseFloat(document.getElementById('pct-'+i)?.value)||0; });
+  const fill = document.getElementById('pctProgFill');
+  fill.style.width = Math.min(total, 100) + '%';
+  fill.style.background = total > 100 ? '#ba1a1a' : '#006565';
+  document.getElementById('pctTotalLabel').textContent = total + '%';
+  document.getElementById('pctErr').style.display = total > 100 ? 'block' : 'none';
+  const grand = getGrandTotal();
+  const pl = document.getElementById('pctPreviewList');
+  pl.innerHTML = '';
+  S.participants.forEach((p, i) => {
+    const pct = parseFloat(document.getElementById('pct-'+i)?.value)||0;
+    const amt = grand * pct / 100;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;justify-content:space-between;';
+    row.innerHTML = `<span style="color:rgba(255,255,255,0.8);font-size:13px;">${p.name} (${pct}%)</span><span style="color:white;font-weight:600;font-size:13px;">${fmt(amt)}</span>`;
+    pl.appendChild(row);
+  });
 }
+
 function confirmPct() {
-  let total=0;
-  S.participants.forEach((_,i)=>{ total+=parseFloat(document.getElementById('pct-'+i)?.value)||0; });
-  if (Math.abs(total-100)>0.01) { toast('⚠ Percentages must total 100%'); return; }
+  let total = 0;
+  S.participants.forEach((_, i) => { total += parseFloat(document.getElementById('pct-'+i)?.value)||0; });
+  if (Math.abs(total - 100) > 0.01) { toast('⚠ Percentages must total 100%'); return; }
   confirmSplit();
 }
 
 // EXACT
 function renderExact() {
-  const grand=getGrandTotal(), eq=Math.round(grand/S.participants.length), list=document.getElementById('exactInputList'); list.innerHTML='';
-  S.participants.forEach((p,i) => {
-    const div=document.createElement('div'); div.className='card';
-    div.innerHTML=`<div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:${randColor(i)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:${randTextColor(i)};flex-shrink:0;">${p.initials}</div><div style="flex:1;"><p style="font-weight:600;font-size:14px;">${p.name}</p></div><div style="display:flex;align-items:center;gap:4px;background:#f0fffe;border:1.5px solid #c6e9e9;border-radius:10px;padding:6px 10px;"><span style="font-weight:700;color:#006565;font-size:13px;">IDR</span><input type="text" inputmode="numeric" id="exact-${i}" value="${eq.toLocaleString('en-US')}" oninput="fmtNumInput(this);updateExactCalc()" style="width:90px;background:transparent;border:none;outline:none;font-weight:700;color:#006565;font-size:13px;text-align:right;font-family:'DM Sans',sans-serif;"/></div></div>`;
+  const grand = getGrandTotal();
+  const eq = Math.round(grand / S.participants.length);
+  const list = document.getElementById('exactInputList');
+  list.innerHTML = '';
+  S.participants.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:${randColor(i)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:${randTextColor(i)};flex-shrink:0;">${p.initials}</div>
+        <div style="flex:1;"><p style="font-weight:600;font-size:14px;">${p.name}</p></div>
+        <div style="display:flex;align-items:center;gap:4px;background:#f0fffe;border:1.5px solid #c6e9e9;border-radius:10px;padding:6px 10px;">
+          <span style="font-weight:700;color:#006565;font-size:13px;">IDR</span>
+          <input type="text" inputmode="numeric" id="exact-${i}" value="${eq.toLocaleString('en-US')}" oninput="fmtNumInput(this);updateExactCalc()" style="width:90px;background:transparent;border:none;outline:none;font-weight:700;color:#006565;font-size:13px;text-align:right;font-family:'DM Sans',sans-serif;"/>
+        </div>
+      </div>
+    `;
     list.appendChild(div);
   });
-  updateExactCalc(); document.getElementById('step-exact').classList.add('active');
+  updateExactCalc();
+  document.getElementById('step-exact').classList.add('active');
 }
+
 function updateExactCalc() {
-  const grand=getGrandTotal(); let alloc=0;
-  S.participants.forEach((_,i)=>{ const el=document.getElementById('exact-'+i); alloc+=el?(parseFloat(el.value.replace(/,/g,''))||0):0; });
-  const rem=grand-alloc, fill=document.getElementById('exactProgFill');
-  fill.style.width=Math.min(alloc/grand*100,100)+'%'; fill.style.background=alloc>grand+0.01?'#ba1a1a':'#006565';
-  const lbl=document.getElementById('exactRemLabel'); lbl.textContent=fmt(Math.abs(rem))+(rem<-0.01?' (over)':''); lbl.style.color=rem<-0.01?'#ba1a1a':'#002020';
-  document.getElementById('exactErr').style.display=alloc>grand+0.01?'block':'none';
+  const grand = getGrandTotal();
+  let alloc = 0;
+  S.participants.forEach((_, i) => {
+    const el = document.getElementById('exact-'+i);
+    alloc += el ? (parseFloat(el.value.replace(/,/g,'')) || 0) : 0;
+  });
+  const rem = grand - alloc;
+  const fill = document.getElementById('exactProgFill');
+  fill.style.width = Math.min(alloc/grand*100, 100) + '%';
+  fill.style.background = alloc > grand + 0.01 ? '#ba1a1a' : '#006565';
+  const lbl = document.getElementById('exactRemLabel');
+  lbl.textContent = fmt(Math.abs(rem)) + (rem < -0.01 ? ' (over)' : '');
+  lbl.style.color = rem < -0.01 ? '#ba1a1a' : '#002020';
+  document.getElementById('exactErr').style.display = alloc > grand + 0.01 ? 'block' : 'none';
 }
+
 function confirmExact() {
-  const grand=getGrandTotal(); let alloc=0;
-  S.participants.forEach((_,i)=>{ const el=document.getElementById('exact-'+i); alloc+=el?(parseFloat(el.value.replace(/,/g,''))||0):0; });
-  if (Math.abs(alloc-grand)>0.5) { toast('⚠ Total amounts do not match the bill'); return; }
+  const grand = getGrandTotal();
+  let alloc = 0;
+  S.participants.forEach((_, i) => {
+    const el = document.getElementById('exact-'+i);
+    alloc += el ? (parseFloat(el.value.replace(/,/g,'')) || 0) : 0;
+  });
+  if (Math.abs(alloc - grand) > 0.5) { toast('⚠ Total amounts do not match the bill'); return; }
   confirmSplit();
 }
 
 // BY ITEM
 function renderByItem() {
-  if (!S.items||S.items.length===0) { document.getElementById('step-byitem').classList.add('active'); document.getElementById('itemListEl').innerHTML='<p style="color:#6e7979;font-size:13px;">No items yet. Tap Add Item to begin.</p>'; return; }
-  renderItemList(); document.getElementById('step-byitem').classList.add('active');
+  if (!S.items || S.items.length === 0) {
+    document.getElementById('step-byitem').classList.add('active');
+    document.getElementById('item-list').innerHTML = '<p>No items yet</p>';
+    return;
+  }
+
+  renderItemList();
+  document.getElementById('step-byitem').classList.add('active');
 }
+
 function renderItemList() {
-  const el=document.getElementById('itemListEl'); el.innerHTML=''; let itemsSubtotal=0;
-  S.items.forEach((item,idx)=>{
-    const totalQty=item.assignees.reduce((s,a)=>s+a.qty,0), itemTotal=item.unitPrice*totalQty; itemsSubtotal+=itemTotal;
-    const chips=item.assignees.map(a=>{ const p=S.participants[a.idx]; return p?`<span style="font-size:10px;font-weight:700;background:#d2f5f4;color:#006565;padding:2px 8px;border-radius:999px;">${p.initials}${a.qty>1?' ×'+a.qty:''}</span>`:''; }).join('');
-    const div=document.createElement('div'); div.className='item-row';
-    div.innerHTML=`<span class="material-symbols-outlined" style="color:#006565;font-size:20px;flex-shrink:0;">receipt</span><div style="flex:1;min-width:0;"><p style="font-weight:600;font-size:14px;">${item.name}${totalQty>1?' <span style="color:#6e7979;font-weight:400;">×'+totalQty+'</span>':''}</p><p style="font-size:11px;color:#6e7979;margin-top:1px;">${fmt(item.unitPrice)} per unit</p><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">${chips}</div></div><div style="text-align:right;flex-shrink:0;"><p style="font-weight:700;font-size:14px;">${fmt(itemTotal)}</p><button onclick="removeItem(${idx})" style="font-size:11px;color:#ba1a1a;background:none;border:none;cursor:pointer;">remove</button></div>`;
+  const el = document.getElementById('itemListEl');
+  el.innerHTML = '';
+  let itemsSubtotal = 0;
+  S.items.forEach((item, idx) => {
+    const totalQty = item.assignees.reduce((s, a) => s + a.qty, 0);
+    const itemTotal = item.unitPrice * totalQty;
+    itemsSubtotal += itemTotal;
+    const chips = item.assignees.map(a => {
+      const p = S.participants[a.idx];
+      return p ? `<span style="font-size:10px;font-weight:700;background:#d2f5f4;color:#006565;padding:2px 8px;border-radius:999px;">${p.initials}${a.qty > 1 ? ' ×'+a.qty : ''}</span>` : '';
+    }).join('');
+    const div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML = `
+      <span class="material-symbols-outlined" style="color:#006565;font-size:20px;flex-shrink:0;">receipt</span>
+      <div style="flex:1;min-width:0;">
+        <p style="font-weight:600;font-size:14px;">${item.name}${totalQty > 1 ? ' <span style="color:#6e7979;font-weight:400;">×'+totalQty+'</span>' : ''}</p>
+        <p style="font-size:11px;color:#6e7979;margin-top:1px;">${fmt(item.unitPrice)} per unit</p>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">${chips}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <p style="font-weight:700;font-size:14px;">${fmt(itemTotal)}</p>
+        <button onclick="removeItem(${idx})" style="font-size:11px;color:#ba1a1a;background:none;border:none;cursor:pointer;">remove</button>
+      </div>
+    `;
     el.appendChild(div);
   });
   updateByItemSummary(itemsSubtotal);
 }
+
 function removeItem(idx) { S.items.splice(idx,1); renderItemList(); }
+
 function updateByItemSummary(itemsSubtotal) {
-  const grand=getGrandTotal(), taxRatio=itemsSubtotal>0&&S.taxEnabled?grand/itemsSubtotal:1, totals={};
-  S.participants.forEach((_,i)=>totals[i]=0);
-  S.items.forEach(item=>{ item.assignees.forEach(a=>{ totals[a.idx]=(totals[a.idx]||0)+item.unitPrice*a.qty; }); });
-  const list=document.getElementById('byItemSummaryList'); list.innerHTML='';
-  S.participants.forEach((p,i)=>{ const amt=(totals[i]||0)*taxRatio; const row=document.createElement('div'); row.style.cssText='display:flex;justify-content:space-between;'; row.innerHTML=`<span style="color:rgba(255,255,255,0.8);font-size:13px;">${p.name}</span><span style="color:white;font-weight:600;font-size:13px;">${fmt(amt)}</span>`; list.appendChild(row); });
-  document.getElementById('byItemTaxInfo').style.display=S.taxEnabled?'block':'none';
+  const grand = getGrandTotal();
+  const taxRatio = itemsSubtotal > 0 && S.taxEnabled ? grand / itemsSubtotal : 1;
+  const totals = {};
+  S.participants.forEach((_, i) => totals[i] = 0);
+  S.items.forEach(item => {
+    item.assignees.forEach(a => {
+      totals[a.idx] = (totals[a.idx] || 0) + item.unitPrice * a.qty;
+    });
+  });
+  const list = document.getElementById('byItemSummaryList');
+  list.innerHTML = '';
+  S.participants.forEach((p, i) => {
+    const amt = (totals[i] || 0) * taxRatio;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;justify-content:space-between;';
+    row.innerHTML = `<span style="color:rgba(255,255,255,0.8);font-size:13px;">${p.name}</span><span style="color:white;font-weight:600;font-size:13px;">${fmt(amt)}</span>`;
+    list.appendChild(row);
+  });
+  document.getElementById('byItemTaxInfo').style.display = S.taxEnabled ? 'block' : 'none';
 }
+
 function openAddItemModal() {
-  const grid=document.getElementById('itemAssignGrid'); grid.innerHTML='';
-  document.getElementById('itemName').value=''; document.getElementById('itemPrice').value=''; document.getElementById('itemTotalPreview').textContent='IDR 0.00';
-  S.participants.forEach((p,i)=>{
-    const row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;gap:10px;background:#f0fffe;border-radius:12px;padding:10px 12px;border:1.5px solid #c6e9e9;transition:border-color 0.15s;';
-    row.dataset.idx=i; row.dataset.sel='0';
-    row.innerHTML=`<div style="width:32px;height:32px;border-radius:50%;background:${randColor(i)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:${randTextColor(i)};flex-shrink:0;">${p.initials}</div><span style="font-weight:600;font-size:13px;flex:1;">${p.name}</span><div style="display:flex;align-items:center;gap:6px;opacity:0.35;pointer-events:none;transition:opacity 0.15s;" id="qtyWrap-${i}"><button type="button" onclick="changeQty(${i},-1)" style="width:26px;height:26px;border-radius:50%;background:#006565;color:white;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-weight:700;">−</button><span style="min-width:18px;text-align:center;font-weight:700;font-size:14px;color:#006565;" id="qtyVal-${i}">1</span><button type="button" onclick="changeQty(${i},1)" style="width:26px;height:26px;border-radius:50%;background:#006565;color:white;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-weight:700;">+</button></div><div style="width:22px;height:22px;border-radius:50%;border:2px solid #bdc9c8;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;" id="checkMark-${i}"></div>`;
-    row.onclick=(e)=>{
-      if (e.target.closest('button')&&!e.target.closest('[id^=checkMark]')) return;
-      const on=row.dataset.sel==='0'; row.dataset.sel=on?'1':'0';
-      row.style.borderColor=on?'#006565':'#c6e9e9'; row.style.background=on?'#e6fffe':'#f0fffe';
-      const qw=document.getElementById('qtyWrap-'+i); qw.style.opacity=on?'1':'0.35'; qw.style.pointerEvents=on?'all':'none';
-      const cm=document.getElementById('checkMark-'+i); cm.style.background=on?'#006565':'transparent'; cm.style.borderColor=on?'#006565':'#bdc9c8';
-      cm.innerHTML=on?'<span class="material-symbols-outlined" style="font-size:14px;color:white;">check</span>':'';
+  const grid = document.getElementById('itemAssignGrid');
+  grid.innerHTML = '';
+  document.getElementById('itemName').value = '';
+  document.getElementById('itemPrice').value = '';
+  document.getElementById('itemTotalPreview').textContent = 'IDR 0.00';
+  S.participants.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;background:#f0fffe;border-radius:12px;padding:10px 12px;border:1.5px solid #c6e9e9;transition:border-color 0.15s;';
+    row.dataset.idx = i;
+    row.dataset.sel = '0';
+    row.innerHTML = `
+      <div style="width:32px;height:32px;border-radius:50%;background:${randColor(i)};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:${randTextColor(i)};flex-shrink:0;">${p.initials}</div>
+      <span style="font-weight:600;font-size:13px;flex:1;">${p.name}</span>
+      <div style="display:flex;align-items:center;gap:6px;opacity:0.35;pointer-events:none;transition:opacity 0.15s;" id="qtyWrap-${i}">
+        <button type="button" onclick="changeQty(${i},-1)" style="width:26px;height:26px;border-radius:50%;background:#006565;color:white;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-weight:700;">−</button>
+        <span style="min-width:18px;text-align:center;font-weight:700;font-size:14px;color:#006565;" id="qtyVal-${i}">1</span>
+        <button type="button" onclick="changeQty(${i},1)" style="width:26px;height:26px;border-radius:50%;background:#006565;color:white;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;font-weight:700;">+</button>
+      </div>
+      <div style="width:22px;height:22px;border-radius:50%;border:2px solid #bdc9c8;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;" id="checkMark-${i}"></div>
+    `;
+    row.onclick = (e) => {
+      if (e.target.closest('button') && !e.target.closest('[id^=checkMark]')) return;
+      const on = row.dataset.sel === '0';
+      row.dataset.sel = on ? '1' : '0';
+      row.style.borderColor = on ? '#006565' : '#c6e9e9';
+      row.style.background = on ? '#e6fffe' : '#f0fffe';
+      const qw = document.getElementById('qtyWrap-' + i);
+      qw.style.opacity = on ? '1' : '0.35';
+      qw.style.pointerEvents = on ? 'all' : 'none';
+      const cm = document.getElementById('checkMark-' + i);
+      cm.style.background = on ? '#006565' : 'transparent';
+      cm.style.borderColor = on ? '#006565' : '#bdc9c8';
+      cm.innerHTML = on ? '<span class="material-symbols-outlined" style="font-size:14px;color:white;">check</span>' : '';
       updateItemTotalPreview();
     };
     grid.appendChild(row);
   });
   openModal('modalAddItem');
 }
-function changeQty(i,delta) { const el=document.getElementById('qtyVal-'+i); el.textContent=Math.max(1,(parseInt(el.textContent)||1)+delta); updateItemTotalPreview(); }
-function updateItemTotalPreview() {
-  const unitPrice=parseFloat((document.getElementById('itemPrice').value||'').replace(/,/g,''))||0; let totalQty=0;
-  document.querySelectorAll('#itemAssignGrid > div').forEach(row=>{ if(row.dataset.sel==='1'){ totalQty+=parseInt(document.getElementById('qtyVal-'+row.dataset.idx)?.textContent)||1; } });
-  document.getElementById('itemTotalPreview').textContent=fmt(unitPrice*totalQty);
+
+function changeQty(i, delta) {
+  const el = document.getElementById('qtyVal-' + i);
+  const cur = parseInt(el.textContent) || 1;
+  const nv = Math.max(1, cur + delta);
+  el.textContent = nv;
+  updateItemTotalPreview();
 }
+
+function updateItemTotalPreview() {
+  const unitPrice = parseFloat((document.getElementById('itemPrice').value || '').replace(/,/g, '')) || 0;
+  let totalQty = 0;
+  document.querySelectorAll('#itemAssignGrid > div').forEach(row => {
+    if (row.dataset.sel === '1') {
+      const i = row.dataset.idx;
+      totalQty += parseInt(document.getElementById('qtyVal-' + i)?.textContent) || 1;
+    }
+  });
+  document.getElementById('itemTotalPreview').textContent = fmt(unitPrice * totalQty);
+}
+
 function submitItem() {
-  const name=document.getElementById('itemName').value.trim(), unitPrice=parseFloat((document.getElementById('itemPrice').value||'').replace(/,/g,''))||0, assignees=[];
-  document.querySelectorAll('#itemAssignGrid > div').forEach(row=>{ if(row.dataset.sel==='1'){ const idx=parseInt(row.dataset.idx), qty=parseInt(document.getElementById('qtyVal-'+idx)?.textContent)||1; assignees.push({idx,qty}); } });
-  if (!name||unitPrice<=0) { toast('⚠ Enter item name and unit price'); return; }
-  if (!assignees.length)   { toast('⚠ Select at least one person'); return; }
-  S.items.push({name,unitPrice,assignees}); document.getElementById('itemName').value=''; document.getElementById('itemPrice').value='';
-  closeModal('modalAddItem'); renderItemList();
+  const name = document.getElementById('itemName').value.trim();
+  const unitPrice = parseFloat((document.getElementById('itemPrice').value || '').replace(/,/g, '')) || 0;
+  const assignees = [];
+  document.querySelectorAll('#itemAssignGrid > div').forEach(row => {
+    if (row.dataset.sel === '1') {
+      const idx = parseInt(row.dataset.idx);
+      const qty = parseInt(document.getElementById('qtyVal-' + idx)?.textContent) || 1;
+      assignees.push({ idx, qty });
+    }
+  });
+  if (!name || unitPrice <= 0) { toast('⚠ Enter item name and unit price'); return; }
+  if (!assignees.length) { toast('⚠ Select at least one person'); return; }
+  S.items.push({ name, unitPrice, assignees });
+  document.getElementById('itemName').value = '';
+  document.getElementById('itemPrice').value = '';
+  closeModal('modalAddItem');
+  renderItemList();
 }
 
 function confirmSplit() {
-  const desc=document.getElementById('billDesc')?.value||'Group Bill';
-  S.transactions.unshift({ type:'expense', cat:'Food', desc:`Split: ${desc}`, amount:getGrandTotal()/S.participants.length, date:today() });
-  saveToStorage();
+  const desc = document.getElementById('billDesc')?.value || 'Group Bill';
+  S.transactions.unshift({ type:'expense', cat:'Food', desc:`Split: ${desc}`, amount: getGrandTotal() / S.participants.length, date: today() });
+  saveToStorage(); // ← ADD THIS LINE
   toast('✓ Split bill saved successfully!');
-  setTimeout(()=>navigateTo('home'),1400);
+  setTimeout(() => navigateTo('home'), 1400);
+}
+// ── STORAGE ──────────────────────────────────────────
+function saveToStorage() {
+  localStorage.setItem('mong_transactions', JSON.stringify(S.transactions));
 }
 
+function loadFromStorage() {
+  const saved = localStorage.getItem('mong_transactions');
+  if (saved) S.transactions = JSON.parse(saved);
+}
 // ═══════════════════════════════════════════════════════════
 // ADD TRANSACTION
 // ═══════════════════════════════════════════════════════════
-const CATS=['Food','Transport','Shopping','Entertainment','Health','Bills','Salary','Freelance','Other'];
+const CATS = ['Food','Transport','Shopping','Entertainment','Health','Bills','Salary','Freelance','Other'];
 function renderCatGrid() {
-  const g=document.getElementById('catGrid'); g.innerHTML='';
-  CATS.forEach(cat=>{ const btn=document.createElement('button'); btn.className='cat-btn'; btn.id='cat-'+cat; btn.innerHTML=`<span class="material-symbols-outlined">${CAT_ICONS[cat]||'more_horiz'}</span><span>${cat}</span>`; btn.onclick=()=>selectCat(cat); g.appendChild(btn); });
+  const g = document.getElementById('catGrid');
+  g.innerHTML = '';
+  CATS.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.id = 'cat-'+cat;
+    btn.innerHTML = `<span class="material-symbols-outlined">${CAT_ICONS[cat]||'more_horiz'}</span><span>${cat}</span>`;
+    btn.onclick = () => selectCat(cat);
+    g.appendChild(btn);
+  });
 }
+
 function selectCat(cat) {
-  S.selectedCat=cat;
-  document.querySelectorAll('.cat-btn').forEach(b=>{ b.classList.remove('active'); const ic=b.querySelector('.material-symbols-outlined'); if(ic)ic.style.color='#006565'; });
-  const btn=document.getElementById('cat-'+cat);
-  if (btn) { btn.classList.add('active'); const ic=btn.querySelector('.material-symbols-outlined'); if(ic)ic.style.color='white'; }
+  S.selectedCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => {
+    b.classList.remove('active');
+    const ic = b.querySelector('.material-symbols-outlined');
+    if (ic) ic.style.color = '#006565';
+  });
+  const btn = document.getElementById('cat-'+cat);
+  if (btn) {
+    btn.classList.add('active');
+    const ic = btn.querySelector('.material-symbols-outlined');
+    if (ic) ic.style.color = 'white';
+  }
 }
+
 function setTransType(t) {
-  S.transType=t;
-  document.getElementById('btnExpense').style.background=t==='expense'?'#ba1a1a':'white';
-  document.getElementById('btnExpense').style.color=t==='expense'?'white':'#3e4949';
-  document.getElementById('btnIncome').style.background=t==='income'?'#006565':'white';
-  document.getElementById('btnIncome').style.color=t==='income'?'white':'#3e4949';
+  S.transType = t;
+  document.getElementById('btnExpense').style.background = t==='expense' ? '#ba1a1a' : 'white';
+  document.getElementById('btnExpense').style.color = t==='expense' ? 'white' : '#3e4949';
+  document.getElementById('btnIncome').style.background = t==='income' ? '#006565' : 'white';
+  document.getElementById('btnIncome').style.color = t==='income' ? 'white' : '#3e4949';
 }
+
 function saveTransaction() {
-  const el=document.getElementById('addAmount'), amt=parseFloat((el.value||'').replace(/,/g,''))||0;
-  if (amt<=0) { toast('⚠ Enter an amount'); return; }
-  const desc=document.getElementById('addDesc').value||(S.selectedCat||'Transaction'), date=document.getElementById('addDate').value||today();
-  S.transactions.unshift({ type:S.transType, cat:S.selectedCat||'Other', desc, amount:amt, date });
-  saveToStorage();
-  toast('✓ Transaction saved!');
-  document.getElementById('addAmount').value=''; document.getElementById('addDesc').value=''; S.selectedCat=null;
-  setTimeout(()=>navigateTo('home'),1200);
+  const el = document.getElementById('addAmount');
+  const amt = parseFloat((el.value || '').replace(/,/g, '')) || 0;
+  if (amt <= 0) { toast('⚠ Enter an amount'); return; }
+  const desc = document.getElementById('addDesc').value || (S.selectedCat||'Transaction');
+  const date = document.getElementById('addDate').value || today();
+  S.transactions.unshift({ type: S.transType, cat: S.selectedCat||'Other', desc, amount: amt, date });
+  saveToStorage(); // ← ADD THIS LINE
+  toast('✓ Transaction saved!');;
+  document.getElementById('addAmount').value = '';
+  document.getElementById('addDesc').value = '';
+  S.selectedCat = null;
+  setTimeout(() => navigateTo('home'), 1200);
 }
 
 // ═══════════════════════════════════════════════════════════
-// REPORTS
+// REPORTS — DYNAMIC
 // ═══════════════════════════════════════════════════════════
-function setPeriod(btn,period) { document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); S.currentPeriod=period; renderReport(); }
+function setPeriod(btn, period) {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  S.currentPeriod = period;
+  renderReport();
+}
+
 function getFilteredTx(period) {
-  const now=new Date(), msMap={'7d':7,'1m':30,'3m':90,'1y':365}, days=msMap[period]||7;
-  return S.transactions.filter(t=>new Date(t.date)>=new Date(now-days*86400000));
+  const now = new Date();
+  let cutoff;
+  if (period === '7d') cutoff = new Date(now - 7*86400000);
+  else if (period === '1m') cutoff = new Date(now - 30*86400000);
+  else if (period === '3m') cutoff = new Date(now - 90*86400000);
+  else cutoff = new Date(now - 365*86400000);
+  return S.transactions.filter(t => new Date(t.date) >= cutoff);
 }
+
 function renderReport() {
-  const txs=getFilteredTx(S.currentPeriod), expenses=txs.filter(t=>t.type==='expense'), income=txs.filter(t=>t.type==='income');
-  const totalExp=expenses.reduce((a,t)=>a+t.amount,0), totalInc=income.reduce((a,t)=>a+t.amount,0);
-  document.getElementById('reportSummaryCards').innerHTML=`<div class="stat-card"><p style="font-size:11px;color:#6e7979;margin-bottom:4px;">Total Expenses</p><p style="font-size:1.2rem;font-weight:700;color:#ba1a1a;">${fmt(totalExp)}</p><p style="font-size:11px;color:#6e7979;margin-top:2px;">${expenses.length} transactions</p></div><div class="stat-card"><p style="font-size:11px;color:#6e7979;margin-bottom:4px;">Total Income</p><p style="font-size:1.2rem;font-weight:700;color:#006565;">${fmt(totalInc)}</p><p style="font-size:11px;color:#6e7979;margin-top:2px;">${income.length} transactions</p></div>`;
+  const txs = getFilteredTx(S.currentPeriod);
+  const expenses = txs.filter(t => t.type === 'expense');
+  const income = txs.filter(t => t.type === 'income');
+  const totalExp = expenses.reduce((a,t) => a+t.amount, 0);
+  const totalInc = income.reduce((a,t) => a+t.amount, 0);
+
+  // Summary cards
+  const sc = document.getElementById('reportSummaryCards');
+  sc.innerHTML = `
+    <div class="stat-card"><p style="font-size:11px;color:#6e7979;margin-bottom:4px;">Total Expenses</p><p style="font-size:1.2rem;font-weight:700;color:#ba1a1a;">${fmt(totalExp)}</p><p style="font-size:11px;color:#6e7979;margin-top:2px;">${expenses.length} transactions</p></div>
+    <div class="stat-card"><p style="font-size:11px;color:#6e7979;margin-bottom:4px;">Total Income</p><p style="font-size:1.2rem;font-weight:700;color:#006565;">${fmt(totalInc)}</p><p style="font-size:11px;color:#6e7979;margin-top:2px;">${income.length} transactions</p></div>
+  `;
+
+  // Build bar chart data
   renderBarChart(txs);
-  const bycat={};
-  expenses.forEach(t=>{bycat[t.cat]=(bycat[t.cat]||0)+t.amount;});
-  const sorted=Object.entries(bycat).sort((a,b)=>b[1]-a[1]), bd=document.getElementById('catBreakdown'); bd.innerHTML='';
-  sorted.forEach(([cat,amt])=>{ const pct=totalExp>0?(amt/totalExp*100).toFixed(0):0; const div=document.createElement('div'); div.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>${cat}</span><span style="font-weight:600;">${fmt(amt)} (${pct}%)</span></div><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:#006565;"></div></div>`; bd.appendChild(div); });
-  if (!sorted.length) bd.innerHTML='<p style="font-size:13px;color:#6e7979;">No expense data yet.</p>';
-  const tl=document.getElementById('reportTxList'); tl.innerHTML='';
-  txs.slice(0,20).forEach(t=>{ const div=document.createElement('div'); div.className='item-row'; const isExp=t.type==='expense'; div.innerHTML=`<div style="width:36px;height:36px;border-radius:12px;background:${isExp?'#ffdad6':'#d4f5e2'};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-symbols-outlined" style="font-size:18px;color:${isExp?'#ba1a1a':'#1a6b3c'};">${CAT_ICONS[t.cat]||'payments'}</span></div><div style="flex:1;"><p style="font-weight:600;font-size:13px;">${t.desc}</p><p style="font-size:11px;color:#6e7979;">${t.cat} · ${t.date}</p></div><p style="font-weight:700;font-size:13px;color:${isExp?'#ba1a1a':'#006565'};">${isExp?'-':'+'} ${fmt(t.amount)}</p>`; tl.appendChild(div); });
-  document.getElementById('reportEmptyMsg').style.display=txs.length?'none':'block';
-  const labels={'7d':'Last 7 days','1m':'Last month','3m':'Last 3 months','1y':'Last year'};
-  document.getElementById('chartPeriodLabel').textContent=labels[S.currentPeriod];
-  document.getElementById('chartTitle').textContent=S.currentPeriod==='7d'?'Daily Spending':S.currentPeriod==='1m'?'Weekly Spending':'Monthly Spending';
+
+  // Category breakdown
+  const bycat = {};
+  expenses.forEach(t => { bycat[t.cat] = (bycat[t.cat]||0) + t.amount; });
+  const sorted = Object.entries(bycat).sort((a,b) => b[1]-a[1]);
+  const bd = document.getElementById('catBreakdown');
+  bd.innerHTML = '';
+  sorted.forEach(([cat, amt]) => {
+    const pct = totalExp > 0 ? (amt/totalExp*100).toFixed(0) : 0;
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>${cat}</span><span style="font-weight:600;">${fmt(amt)} (${pct}%)</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:#006565;"></div></div>
+    `;
+    bd.appendChild(div);
+  });
+  if (!sorted.length) bd.innerHTML = '<p style="font-size:13px;color:#6e7979;">No expense data yet.</p>';
+
+  // Transaction list
+  const tl = document.getElementById('reportTxList');
+  tl.innerHTML = '';
+  txs.slice(0, 20).forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'item-row';
+    const isExp = t.type === 'expense';
+    div.innerHTML = `
+      <div style="width:36px;height:36px;border-radius:12px;background:${isExp?'#ffdad6':'#d4f5e2'};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-symbols-outlined" style="font-size:18px;color:${isExp?'#ba1a1a':'#1a6b3c'};">${CAT_ICONS[t.cat]||'payments'}</span></div>
+      <div style="flex:1;"><p style="font-weight:600;font-size:13px;">${t.desc}</p><p style="font-size:11px;color:#6e7979;">${t.cat} · ${t.date}</p></div>
+      <p style="font-weight:700;font-size:13px;color:${isExp?'#ba1a1a':'#006565'};">${isExp?'-':'+'} ${fmt(t.amount)}</p>
+    `;
+    tl.appendChild(div);
+  });
+  if (!txs.length) document.getElementById('reportEmptyMsg').style.display = 'block';
+  else document.getElementById('reportEmptyMsg').style.display = 'none';
+
+  // Period label
+  const labels = { '7d':'Last 7 days','1m':'Last month','3m':'Last 3 months','1y':'Last year' };
+  document.getElementById('chartPeriodLabel').textContent = labels[S.currentPeriod];
+  document.getElementById('chartTitle').textContent = S.currentPeriod === '7d' ? 'Daily Spending' : S.currentPeriod === '1m' ? 'Weekly Spending' : 'Monthly Spending';
 }
+
 function renderBarChart(txs) {
-  const bc=document.getElementById('barChart'); bc.innerHTML='';
-  const period=S.currentPeriod, now=new Date(); let buckets=[];
-  if (period==='7d') {
-    for(let i=6;i>=0;i--){ const d=new Date(now-i*86400000); buckets.push({key:d.toISOString().split('T')[0],label:d.toLocaleDateString('en-US',{weekday:'short'}).slice(0,2)}); }
-    txs.filter(t=>t.type==='expense').forEach(t=>{ const b=buckets.find(bk=>bk.key===t.date); if(b)b.val=(b.val||0)+t.amount; });
-  } else if (period==='1m') {
-    for(let i=3;i>=0;i--){ const end=new Date(now-i*7*86400000), start=new Date(now-(i+1)*7*86400000); buckets.push({label:`W${4-i}`,start,end}); }
-    txs.filter(t=>t.type==='expense').forEach(t=>{ const td=new Date(t.date); const b=buckets.find(bk=>td>=bk.start&&td<=bk.end); if(b)b.val=(b.val||0)+t.amount; });
+  const bc = document.getElementById('barChart');
+  bc.innerHTML = '';
+  const period = S.currentPeriod;
+  const now = new Date();
+  let buckets = [];
+
+  if (period === '7d') {
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now - i*86400000);
+      const key = d.toISOString().split('T')[0];
+      const label = d.toLocaleDateString('en-US',{weekday:'short'}).slice(0,2);
+      buckets.push({ key, label });
+    }
+    txs.filter(t=>t.type==='expense').forEach(t => {
+      const b = buckets.find(bk => bk.key === t.date);
+      if (b) b.val = (b.val||0) + t.amount;
+    });
+  } else if (period === '1m') {
+    for (let i = 3; i >= 0; i--) {
+      const d = new Date(now - i*7*86400000);
+      const label = `W${4-i}`;
+      const start = new Date(now - (i+1)*7*86400000);
+      buckets.push({ label, start, end: d });
+    }
+    txs.filter(t=>t.type==='expense').forEach(t => {
+      const td = new Date(t.date);
+      const b = buckets.find(bk => td >= bk.start && td <= bk.end);
+      if (b) b.val = (b.val||0) + t.amount;
+    });
   } else {
-    const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], months=period==='3m'?3:12;
-    for(let i=months-1;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); buckets.push({month:d.getMonth(),year:d.getFullYear(),label:mn[d.getMonth()]}); }
-    txs.filter(t=>t.type==='expense').forEach(t=>{ const d=new Date(t.date); const b=buckets.find(bk=>bk.month===d.getMonth()&&bk.year===d.getFullYear()); if(b)b.val=(b.val||0)+t.amount; });
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const months = period === '3m' ? 3 : 12;
+    for (let i = months-1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+      buckets.push({ month: d.getMonth(), year: d.getFullYear(), label: monthNames[d.getMonth()] });
+    }
+    txs.filter(t=>t.type==='expense').forEach(t => {
+      const d = new Date(t.date);
+      const b = buckets.find(bk => bk.month === d.getMonth() && bk.year === d.getFullYear());
+      if (b) b.val = (b.val||0) + t.amount;
+    });
   }
-  const max=Math.max(...buckets.map(b=>b.val||0),1);
-  buckets.forEach(b=>{ const pct=((b.val||0)/max*100).toFixed(0), isMax=(b.val||0)===max&&(b.val||0)>0; const col=document.createElement('div'); col.className='bar-col'; col.innerHTML=`${b.val?`<span class="bar-val">${fmt(b.val).replace('IDR','')}</span>`:''}<div class="bar-fill" style="height:${pct}%;background:${isMax?'#006565':'#c6e9e9'};"></div><span class="bar-label">${b.label}</span>`; bc.appendChild(col); });
+
+  const max = Math.max(...buckets.map(b => b.val||0), 1);
+  buckets.forEach((b, i) => {
+    const pct = ((b.val||0) / max * 100).toFixed(0);
+    const isMax = (b.val||0) === max && (b.val||0) > 0;
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    col.innerHTML = `
+      ${b.val ? `<span class="bar-val">${fmt(b.val).replace('IDR','')}</span>` : ''}
+      <div class="bar-fill" style="height:${pct}%;background:${isMax?'#006565':'#c6e9e9'};"></div>
+      <span class="bar-label">${b.label}</span>
+    `;
+    bc.appendChild(col);
+  });
 }
 
 // ═══════════════════════════════════════════════════════════
 // HOME
 // ═══════════════════════════════════════════════════════════
 function renderHome() {
-  // Greeting with user name
-  const greeting = document.getElementById('homeGreeting');
-  if (greeting && S.currentUser) {
-    const firstName = S.currentUser.name.split(' ')[0];
-    greeting.textContent = `Welcome back, ${firstName} 👋`;
-  }
-  const recent=S.transactions.slice(0,5), list=document.getElementById('homeTransactionList'); list.innerHTML='';
-  recent.forEach(t=>{ const isExp=t.type==='expense'; const div=document.createElement('div'); div.className='stat-card'; div.style.cssText='display:flex;align-items:center;gap:12px;'; div.innerHTML=`<div style="width:40px;height:40px;border-radius:12px;background:${isExp?'#ffdad6':'#d4f5e2'};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-symbols-outlined" style="color:${isExp?'#ba1a1a':'#1a6b3c'};">${CAT_ICONS[t.cat]||'payments'}</span></div><div style="flex:1;"><p style="font-weight:600;font-size:14px;">${t.desc}</p><p style="font-size:11px;color:#6e7979;">${t.type==='expense'?'Expense':'Income'} · ${t.date}</p></div><p style="font-weight:700;font-size:14px;color:${isExp?'#ba1a1a':'#006565'};">${isExp?'-':'+'}${fmt(t.amount)}</p>`; list.appendChild(div); });
-  if (!recent.length) list.innerHTML='<p style="font-size:13px;color:#6e7979;">No transactions yet.</p>';
-  document.getElementById('homePendingSplits').innerHTML=`<div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;"><div><p style="font-weight:600;font-size:14px;">Bandung Staycation</p><p style="font-size:12px;color:#6e7979;">Jane & Mark haven't paid</p></div><div style="text-align:right;"><p style="font-weight:700;color:#006565;">IDR182,312.00</p><button style="font-size:12px;color:#006565;font-weight:600;background:none;border:none;cursor:pointer;margin-top:2px;">Remind</button></div></div>`;
-  const allIncome=S.transactions.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
-  const allExpense=S.transactions.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
-  document.getElementById('homeTotalBalance').textContent=fmt(allIncome-allExpense);
-  document.getElementById('homeTotalIncome').textContent=fmt(allIncome);
-  document.getElementById('homeTotalExpense').textContent=fmt(allExpense);
+  const recent = S.transactions.slice(0, 5);
+  const list = document.getElementById('homeTransactionList');
+  list.innerHTML = '';
+  recent.forEach(t => {
+    const isExp = t.type === 'expense';
+    const div = document.createElement('div');
+    div.className = 'stat-card';
+    div.style.cssText = 'display:flex;align-items:center;gap:12px;';
+    div.innerHTML = `
+      <div style="width:40px;height:40px;border-radius:12px;background:${isExp?'#ffdad6':'#d4f5e2'};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span class="material-symbols-outlined" style="color:${isExp?'#ba1a1a':'#1a6b3c'};">${CAT_ICONS[t.cat]||'payments'}</span></div>
+      <div style="flex:1;"><p style="font-weight:600;font-size:14px;">${t.desc}</p><p style="font-size:11px;color:#6e7979;">${t.type==='expense'?'Expense':'Income'} · ${t.date}</p></div>
+      <p style="font-weight:700;font-size:14px;color:${isExp?'#ba1a1a':'#006565'};">${isExp?'-':'+'}${fmt(t.amount)}</p>
+    `;
+    list.appendChild(div);
+  });
+  if (!recent.length) list.innerHTML = '<p style="font-size:13px;color:#6e7979;">No transactions yet.</p>';
+
+  // Pending splits
+  const ps = document.getElementById('homePendingSplits');
+  ps.innerHTML = `
+    <div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;">
+      <div><p style="font-weight:600;font-size:14px;">Bandung Staycation</p><p style="font-size:12px;color:#6e7979;">Jane & Mark haven't paid</p></div>
+      <div style="text-align:right;"><p style="font-weight:700;color:#006565;">IDR182,312.00</p><button style="font-size:12px;color:#006565;font-weight:600;background:none;border:none;cursor:pointer;margin-top:2px;">Remind</button></div>
+    </div>
+  `;
+
+  // Update balance
+  const allIncome = S.transactions.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
+  const allExpense = S.transactions.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
+  document.getElementById('homeTotalBalance').textContent = fmt(allIncome - allExpense);
+  document.getElementById('homeTotalIncome').textContent = fmt(allIncome);
+  document.getElementById('homeTotalExpense').textContent = fmt(allExpense);
 }
 
 // ═══════════════════════════════════════════════════════════
 // PROFILE
 // ═══════════════════════════════════════════════════════════
 function renderProfile() {
-  // Show logged-in user info
-  if (S.currentUser) {
-    document.getElementById('profileName').textContent  = S.currentUser.name;
-    document.getElementById('profileEmail').textContent = S.currentUser.email;
-    document.getElementById('profileAvatar').textContent = initials(S.currentUser.name);
-  }
-  const splitCount=S.transactions.filter(t=>t.desc.startsWith('Split:')).length;
-  document.getElementById('profileStats').innerHTML=`
-    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${splitCount}</p><p style="font-size:11px;color:#6e7979;">Split Bills</p></div>
+  const splitCount = S.transactions.filter(t=>t.desc.startsWith('Split:')).length;
+  document.getElementById('profileStats').innerHTML = `
+    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${splitCount+12}</p><p style="font-size:11px;color:#6e7979;">Split Bills</p></div>
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">5</p><p style="font-size:11px;color:#6e7979;">Active Friends</p></div>
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${S.transactions.length}</p><p style="font-size:11px;color:#6e7979;">Transactions</p></div>
   `;
 }
 
 // ═══════════════════════════════════════════════════════════
-// SETTINGS
+// BUSINESS MODE & UTILS
 // ═══════════════════════════════════════════════════════════
 function toggleBusinessMode() {
-  S.businessMode=!S.businessMode;
-  ['bizToggleDesk','bizToggleMob'].forEach(id=>{ const el=document.getElementById(id); if(el)el.classList.toggle('on',S.businessMode); });
-  document.getElementById('bizModeStatus').textContent=S.businessMode?'Active':'Inactive';
-  document.getElementById('sidebarMode').textContent=S.businessMode?'Business Mode':'Personal Mode';
-  document.getElementById('profileModeBadge').textContent=S.businessMode?'Business':'Personal';
-  const btn=document.getElementById('bizBtn'); if(btn){btn.textContent=S.businessMode?'Business':'Personal';}
-  toast(S.businessMode?'💼 Business mode enabled':'👤 Personal mode enabled');
+  S.businessMode = !S.businessMode;
+  ['bizToggleDesk','bizToggleMob'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('on', S.businessMode);
+  });
+  document.getElementById('bizModeStatus').textContent = S.businessMode ? 'Active' : 'Inactive';
+  document.getElementById('sidebarMode').textContent = S.businessMode ? 'Business Mode' : 'Personal Mode';
+  document.getElementById('profileModeBadge').textContent = S.businessMode ? 'Business' : 'Personal';
+  const btn = document.getElementById('bizBtn');
+  if (btn) { btn.textContent = S.businessMode ? 'Business' : 'Personal'; }
+  toast(S.businessMode ? '💼 Business mode enabled' : '👤 Personal mode enabled');
 }
 function toggleNotif() {
-  S.notifEnabled=!S.notifEnabled;
-  const toggle=document.getElementById('notifToggleMob'); if(toggle)toggle.classList.toggle('on',S.notifEnabled);
-  const status=document.getElementById('notifStatus'); if(status)status.textContent=S.notifEnabled?'Active':'Inactive';
-  const nb=document.getElementById('profileNotifBadge');
-  if(nb){ nb.textContent=S.notifEnabled?'On':'Off'; nb.style.background=S.notifEnabled?'#d4f5e2':'#ffdad6'; nb.style.color=S.notifEnabled?'#1a6b3c':'#ba1a1a'; }
+  S.notifEnabled = !S.notifEnabled;
+  const toggle = document.getElementById('notifToggleMob');
+  if (toggle) toggle.classList.toggle('on', S.notifEnabled);
+  const status = document.getElementById('notifStatus');
+  if (status) status.textContent = S.notifEnabled ? 'Active' : 'Inactive';
+  const nb = document.getElementById('profileNotifBadge');
+  if (nb) {
+    nb.textContent = S.notifEnabled ? 'On' : 'Off';
+    nb.style.background = S.notifEnabled ? '#d4f5e2' : '#ffdad6';
+    nb.style.color = S.notifEnabled ? '#1a6b3c' : '#ba1a1a';
+  }
   showNotifPopup(S.notifEnabled);
 }
+
 function showNotifPopup(enabled) {
-  const ring=document.getElementById('notifPopupIconRing'), icon=document.getElementById('notifPopupIcon'), title=document.getElementById('notifPopupTitle'), desc=document.getElementById('notifPopupDesc');
-  if (enabled) { ring.style.background='#d4f5e2'; icon.style.color='#1a6b3c'; icon.textContent='notifications_active'; title.textContent='Notifications Enabled'; desc.textContent="You'll receive reminders for pending split bills and payment updates from your participants."; }
-  else         { ring.style.background='#ffdad6'; icon.style.color='#ba1a1a'; icon.textContent='notifications_off';   title.textContent='Notifications Disabled'; desc.textContent="You won't receive any reminders or payment alerts. You can re-enable this anytime in Profile settings."; }
-  const overlay=document.getElementById('notifPopup'); overlay.classList.add('show');
-  if(S._notifPopupTimer)clearTimeout(S._notifPopupTimer);
-  S._notifPopupTimer=setTimeout(()=>overlay.classList.remove('show'),4000);
+  const ring = document.getElementById('notifPopupIconRing');
+  const icon = document.getElementById('notifPopupIcon');
+  const title = document.getElementById('notifPopupTitle');
+  const desc = document.getElementById('notifPopupDesc');
+
+  if (enabled) {
+    ring.style.background = '#d4f5e2';
+    icon.style.color = '#1a6b3c';
+    icon.textContent = 'notifications_active';
+    title.textContent = 'Notifications Enabled';
+    desc.textContent = "You'll receive reminders for pending split bills and payment updates from your participants.";
+  } else {
+    ring.style.background = '#ffdad6';
+    icon.style.color = '#ba1a1a';
+    icon.textContent = 'notifications_off';
+    title.textContent = 'Notifications Disabled';
+    desc.textContent = "You won't receive any reminders or payment alerts. You can re-enable this anytime in Profile settings.";
+  }
+
+  const overlay = document.getElementById('notifPopup');
+  overlay.classList.add('show');
+  if (S._notifPopupTimer) clearTimeout(S._notifPopupTimer);
+  S._notifPopupTimer = setTimeout(() => overlay.classList.remove('show'), 4000);
 }
+
 function dismissNotifPopup(e) {
-  if(e&&e.target!==document.getElementById('notifPopup'))return;
-  if(S._notifPopupTimer)clearTimeout(S._notifPopupTimer);
+  if (e && e.target !== document.getElementById('notifPopup')) return;
+  if (S._notifPopupTimer) clearTimeout(S._notifPopupTimer);
   document.getElementById('notifPopup').classList.remove('show');
 }
 
-// ═══════════════════════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════════════════════
 function toast(msg) {
-  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),2500);
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
 }
 
 // ═══════════════════════════════════════════════════════════
-// BOOT — check session on page load
+// INIT
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  const session = getSession();
-  if (session && session.email) {
-    // Already logged in — skip auth screen
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('appShell').style.display   = '';
-    loadFromStorage(session.email);
-    initApp(session);
+  loadFromStorage(); // ← ADD THIS LINE
+  buildQuickContacts();
+  renderChips();
+  renderHome();
+  renderCatGrid();
+  document.getElementById('addDate').value = today();
+  updatePreview();
+
+  // Sync initial notification state
+  const toggle = document.getElementById('notifToggleMob');
+  if (toggle) toggle.classList.toggle('on', S.notifEnabled);
+  const status = document.getElementById('notifStatus');
+  if (status) status.textContent = S.notifEnabled ? 'Active' : 'Inactive';
+  const nb = document.getElementById('profileNotifBadge');
+  if (nb) {
+    nb.textContent = S.notifEnabled ? 'On' : 'Off';
+    nb.style.background = S.notifEnabled ? '#d4f5e2' : '#ffdad6';
+    nb.style.color = S.notifEnabled ? '#1a6b3c' : '#ba1a1a';
   }
-  // else: auth screen is already visible by default
 });
 </script>
 </body>
