@@ -1398,10 +1398,19 @@ function submitItem() {
 function confirmSplit() {
   const desc = document.getElementById('billDesc')?.value || 'Group Bill';
   S.transactions.unshift({ type:'expense', cat:'Food', desc:`Split: ${desc}`, amount: getGrandTotal() / S.participants.length, date: today() });
+  saveToStorage(); // ← ADD THIS LINE
   toast('✓ Split bill saved successfully!');
   setTimeout(() => navigateTo('home'), 1400);
 }
+// ── STORAGE ──────────────────────────────────────────
+function saveToStorage() {
+  localStorage.setItem('mong_transactions', JSON.stringify(S.transactions));
+}
 
+function loadFromStorage() {
+  const saved = localStorage.getItem('mong_transactions');
+  if (saved) S.transactions = JSON.parse(saved);
+}
 // ═══════════════════════════════════════════════════════════
 // ADD TRANSACTION
 // ═══════════════════════════════════════════════════════════
@@ -1449,7 +1458,8 @@ function saveTransaction() {
   const desc = document.getElementById('addDesc').value || (S.selectedCat||'Transaction');
   const date = document.getElementById('addDate').value || today();
   S.transactions.unshift({ type: S.transType, cat: S.selectedCat||'Other', desc, amount: amt, date });
-  toast('✓ Transaction saved!');
+  saveToStorage(); // ← ADD THIS LINE
+  toast('✓ Transaction saved!');;
   document.getElementById('addAmount').value = '';
   document.getElementById('addDesc').value = '';
   S.selectedCat = null;
@@ -1716,6 +1726,7 @@ function toast(msg) {
 // INIT
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+  loadFromStorage(); // ← ADD THIS LINE
   buildQuickContacts();
   renderChips();
   renderHome();
