@@ -1374,22 +1374,12 @@ tailwind.config = {
   </div>
 </div><!-- /app-shell -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════
-// AUTH SYSTEM
+// AUTH SYSTEM  (auth logic lives in supabase.js)
 // ═══════════════════════════════════════════════════════════
-
-// Simple hash — not cryptographic, just avoids plain-text passwords in storage
-function hashPassword(pw) {
-  let h = 0;
-  for (let i = 0; i < pw.length; i++) { h = (Math.imul(31, h) + pw.charCodeAt(i)) | 0; }
-  return h.toString(36) + pw.length.toString(36) + btoa(pw.slice(0,3)).replace(/=/g,'');
-}
-
-function getUsers()    { return JSON.parse(localStorage.getItem('mong_users')  || '{}'); }
-function getSession()  { return JSON.parse(localStorage.getItem('mong_session')|| 'null'); }
-function saveUsers(u)  { localStorage.setItem('mong_users', JSON.stringify(u)); }
-function saveSession(s){ localStorage.setItem('mong_session', JSON.stringify(s)); }
 
 function switchAuthTab(tab) {
   ['signin','register'].forEach(t => {
@@ -1461,55 +1451,50 @@ function closeSocialModal(id) {
   }
 }
 
-function handleGoogleLogin() {
-  // Google OAuth requires a server-side redirect (client_id + redirect_uri).
-  // Since this is a self-contained file, we simulate with a demo account.
-  const demoEmail = 'google.user@gmail.com';
-  const users = getUsers();
-  if (!users[demoEmail]) {
-    users[demoEmail] = { name: 'Google User', email: demoEmail, passwordHash: '', provider: 'google', createdAt: new Date().toISOString() };
-    saveUsers(users);
+async function handleGoogleLogin() {
+  try {
+    await dbSignInWithGoogle();
+    // Page will redirect to Google; session is picked up on return via dbOnAuthChange
+  } catch (e) {
+    toast('✗ Google sign-in failed: ' + e.message);
   }
-  const session = { email: demoEmail, name: users[demoEmail].name };
-  saveSession(session);
-  toast('🔑 Signed in with Google (demo)');
-  launchApp(session);
 }
 
-function handleEmailModalLogin() {
+async function handleEmailModalLogin() {
   const email = document.getElementById('emailModalEmail').value.trim().toLowerCase();
   const pw    = document.getElementById('emailModalPassword').value;
   document.getElementById('emailModalError').classList.remove('show');
 
   if (!email || !pw) { showAuthError('emailModalError', 'Please fill in all fields.'); return; }
 
-  const users = getUsers();
-  if (!users[email]) { showAuthError('emailModalError', 'No account found with this email.'); return; }
-  if (users[email].passwordHash !== hashPassword(pw)) { showAuthError('emailModalError', 'Incorrect password. Please try again.'); return; }
-
-  closeSocialModal('emailLoginModal');
-  const session = { email, name: users[email].name };
-  saveSession(session);
-  launchApp(session);
+  try {
+    const session = await dbSignIn(email, pw);
+    closeSocialModal('emailLoginModal');
+    launchApp(session);
+  } catch (e) {
+    showAuthError('emailModalError', e.message || 'Sign-in failed. Check your credentials.');
+  }
 }
 
-function handleSignIn() {
+async function handleSignIn() {
   const email = document.getElementById('signinEmail').value.trim().toLowerCase();
   const pw    = document.getElementById('signinPassword').value;
   document.getElementById('signinError').classList.remove('show');
 
   if (!email || !pw) { showAuthError('signinError', 'Please fill in all fields.'); return; }
 
-  const users = getUsers();
-  if (!users[email]) { showAuthError('signinError', 'No account found with this email.'); return; }
-  if (users[email].passwordHash !== hashPassword(pw)) { showAuthError('signinError', 'Incorrect password. Please try again.'); return; }
-
-  const session = { email, name: users[email].name };
-  saveSession(session);
-  launchApp(session);
+  const btn = document.querySelector('#viewSignIn .btn-auth');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const session = await dbSignIn(email, pw);
+    launchApp(session);
+  } catch (e) {
+    showAuthError('signinError', e.message || 'Sign-in failed. Check your credentials.');
+    btn.disabled = false; btn.textContent = 'Login';
+  }
 }
 
-function handleRegister() {
+async function handleRegister() {
   const name    = document.getElementById('regName').value.trim();
   const email   = document.getElementById('regEmail').value.trim().toLowerCase();
   const pw      = document.getElementById('regPassword').value;
@@ -1521,19 +1506,19 @@ function handleRegister() {
   if (pw.length < 6) { showAuthError('registerError', 'Password must be at least 6 characters.'); return; }
   if (pw !== confirm) { showAuthError('registerError', 'Passwords do not match.'); return; }
 
-  const users = getUsers();
-  if (users[email]) { showAuthError('registerError', 'An account with this email already exists.'); return; }
-
-  users[email] = { name, email, passwordHash: hashPassword(pw), createdAt: new Date().toISOString() };
-  saveUsers(users);
-
-  const session = { email, name };
-  saveSession(session);
-  launchApp(session, true); // new user → show landing screen
+  const btn = document.querySelector('#viewRegister .btn-auth');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  try {
+    const session = await dbSignUp(name, email, pw);
+    launchApp(session, true); // new user → show landing screen
+  } catch (e) {
+    showAuthError('registerError', e.message || 'Registration failed. Please try again.');
+    btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;">person_add</span> Create Account';
+  }
 }
 
-function authLogout() {
-  localStorage.removeItem('mong_session');
+async function authLogout() {
+  try { await dbSignOut(); } catch (_) {}
   // Reset app state
   S.transactions = [];
   S.contacts = [];
@@ -1562,26 +1547,17 @@ function launchApp(session, isNewUser = false) {
   authEl.classList.add('hiding');
   setTimeout(() => { authEl.style.display = 'none'; }, 400);
 
-  // Only show landing screen for new users (no saved mode yet)
-  const users = getUsers();
-  const userRecord = users[session.email];
-  if (isNewUser || !userRecord || !userRecord.mode) {
+  // session.mode is null for brand-new users (no profile mode saved yet)
+  if (isNewUser || !session.mode) {
     showLandingScreen(session);
   } else {
-    // Returning user: go straight to app with saved mode
-    setTimeout(() => {
+    // Returning user: skip landing, load data, go straight to app
+    setTimeout(async () => {
       document.getElementById('appShell').style.display = '';
-      loadFromStorage(session.email);
-      loadContacts(session.email);
+      await loadFromStorage(session.id);
+      await loadContacts(session.id);
       initApp(session);
-      if (userRecord.mode === 'business') {
-        S.businessMode = true;
-        ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
-        const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
-        const smMode = document.getElementById('sidebarMode'); if (smMode) smMode.textContent = 'Business Mode';
-        const pmBadge = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
-        const bizBtn = document.getElementById('bizBtn'); if (bizBtn) bizBtn.textContent = 'Business';
-      }
+      if (session.mode === 'business') { _applyBusinessModeUI(); }
     }, 420);
   }
 }
@@ -1607,34 +1583,26 @@ function selectMode(mode) {
   document.getElementById('modeCardBusiness').classList.toggle('selected', mode === 'business');
 }
 
-function confirmMode() {
+async function confirmMode() {
   const landingEl = document.getElementById('landingScreen');
   landingEl.classList.add('hiding');
   setTimeout(() => { landingEl.style.display = 'none'; landingEl.classList.remove('hiding'); }, 400);
 
-  // Save mode preference to user record so landing won't show again
-  const users = getUsers();
-  if (_pendingSession && users[_pendingSession.email]) {
-    users[_pendingSession.email].mode = _selectedMode;
-    saveUsers(users);
+  // Persist mode so landing won't show again on next login
+  try {
+    await dbSaveProfile(_pendingSession.id, { mode: _selectedMode, name: _pendingSession.name });
+    _pendingSession.mode = _selectedMode;
+  } catch (e) {
+    toast('⚠ Could not save preference — continuing anyway');
   }
 
-  // Apply mode selection and launch app
   const session = _pendingSession;
   document.getElementById('appShell').style.display = '';
-  loadFromStorage(session.email);
-  loadContacts(session.email);
+  await loadFromStorage(session.id);
+  await loadContacts(session.id);
   initApp(session);
 
-  // Apply business mode if selected
-  if (_selectedMode === 'business') {
-    S.businessMode = true;
-    ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
-    const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
-    const smMode = document.getElementById('sidebarMode'); if (smMode) smMode.textContent = 'Business Mode';
-    const pmBadge = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
-    const bizBtn = document.getElementById('bizBtn'); if (bizBtn) bizBtn.textContent = 'Business';
-  }
+  if (_selectedMode === 'business') { _applyBusinessModeUI(); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1669,26 +1637,36 @@ const pageTitles = { home:'Home', split:'Split Bill', add:'Add Transaction', rep
 // ═══════════════════════════════════════════════════════════
 // STORAGE (per-user)
 // ═══════════════════════════════════════════════════════════
-function storageKey(email) { return 'mong_tx_' + (email || 'guest'); }
+// ═══════════════════════════════════════════════════════════
+// STORAGE  (thin wrappers that keep the rest of the app tidy)
+// ═══════════════════════════════════════════════════════════
 
-function saveToStorage() {
-  if (!S.currentUser) return;
-  localStorage.setItem(storageKey(S.currentUser.email), JSON.stringify(S.transactions));
+async function loadFromStorage(userId) {
+  try   { S.transactions = await dbLoadTransactions(userId); }
+  catch (e) { console.error('loadTransactions:', e); S.transactions = []; }
 }
 
-function loadFromStorage(email) {
-  const saved = localStorage.getItem(storageKey(email));
-  S.transactions = saved ? JSON.parse(saved) : [];
+// saveToStorage() is no longer used for bulk saves — individual inserts happen
+// in saveTransaction() and confirmSplit() instead. Kept as a no-op so any
+// stray calls don't break anything.
+function saveToStorage() {}
+
+async function loadContacts(userId) {
+  try   { S.contacts = await dbLoadContacts(userId); }
+  catch (e) { console.error('loadContacts:', e); S.contacts = []; }
 }
 
-function saveContacts() {
-  if (!S.currentUser) return;
-  localStorage.setItem('mong_contacts_' + S.currentUser.email, JSON.stringify(S.contacts));
-}
+// saveContacts() replaced by per-operation DB calls (insert/update/delete).
+function saveContacts() {}
 
-function loadContacts(email) {
-  const saved = localStorage.getItem('mong_contacts_' + email);
-  S.contacts = saved ? JSON.parse(saved) : [];
+// Shared helper — applies business-mode UI after login or mode switch
+function _applyBusinessModeUI() {
+  S.businessMode = true;
+  ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
+  const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
+  const smMode   = document.getElementById('sidebarMode');   if (smMode)   smMode.textContent   = 'Business Mode';
+  const pmBadge  = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
+  const bizBtn   = document.getElementById('bizBtn');         if (bizBtn)   bizBtn.textContent   = 'Business';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2061,12 +2039,16 @@ function submitItem() {
   closeModal('modalAddItem'); renderItemList();
 }
 
-function confirmSplit() {
+async function confirmSplit() {
   const desc=document.getElementById('billDesc')?.value||'Group Bill';
-  S.transactions.unshift({ type:'expense', cat:'Food', desc:`Split: ${desc}`, amount:getGrandTotal()/S.participants.length, date:today() });
-  saveToStorage();
-  toast('✓ Split bill saved successfully!');
-  setTimeout(()=>navigateTo('home'),1400);
+  const tx = { type:'expense', cat:'Food', desc:`Split: ${desc}`, amount:getGrandTotal()/S.participants.length, date:today() };
+  try {
+    const id = await dbInsertTransaction(S.currentUser.id, tx);
+    tx.id = id;
+    S.transactions.unshift(tx);
+    toast('✓ Split bill saved successfully!');
+    setTimeout(()=>navigateTo('home'),1400);
+  } catch(e) { toast('✗ Save failed: ' + e.message); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2090,15 +2072,19 @@ function setTransType(t) {
   document.getElementById('btnIncome').style.background=t==='income'?'#006565':'white';
   document.getElementById('btnIncome').style.color=t==='income'?'white':'#3e4949';
 }
-function saveTransaction() {
+async function saveTransaction() {
   const el=document.getElementById('addAmount'), amt=parseFloat((el.value||'').replace(/,/g,''))||0;
   if (amt<=0) { toast('⚠ Enter an amount'); return; }
   const desc=document.getElementById('addDesc').value||(S.selectedCat||'Transaction'), date=document.getElementById('addDate').value||today();
-  S.transactions.unshift({ type:S.transType, cat:S.selectedCat||'Other', desc, amount:amt, date });
-  saveToStorage();
-  toast('✓ Transaction saved!');
-  document.getElementById('addAmount').value=''; document.getElementById('addDesc').value=''; S.selectedCat=null;
-  setTimeout(()=>navigateTo('home'),1200);
+  const tx = { type:S.transType, cat:S.selectedCat||'Other', desc, amount:amt, date };
+  try {
+    const id = await dbInsertTransaction(S.currentUser.id, tx);
+    tx.id = id;
+    S.transactions.unshift(tx);
+    toast('✓ Transaction saved!');
+    document.getElementById('addAmount').value=''; document.getElementById('addDesc').value=''; S.selectedCat=null;
+    setTimeout(()=>navigateTo('home'),1200);
+  } catch(e) { toast('✗ Save failed: ' + e.message); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2230,31 +2216,38 @@ function openEditContact(i) {
   openModal('modalContact');
 }
 
-function saveContact() {
+async function saveContact() {
   const name = document.getElementById('contactNameInput').value.trim();
   if (!name) { toast('⚠ Enter a name'); return; }
   const note = document.getElementById('contactNoteInput').value.trim();
   const idx  = parseInt(document.getElementById('contactEditIdx').value);
-  if (idx === -1) {
-    if (S.contacts.find(c => c.name.toLowerCase() === name.toLowerCase())) { toast('⚠ Participant already exists'); return; }
-    S.contacts.push({ name, note });
-    toast('✓ Participant added');
-  } else {
-    S.contacts[idx] = { name, note };
-    toast('✓ Participant updated');
-  }
-  saveContacts();
-  closeModal('modalContact');
-  renderProfile();
-  buildQuickContacts();
+  try {
+    if (idx === -1) {
+      if (S.contacts.find(c => c.name.toLowerCase() === name.toLowerCase())) { toast('⚠ Participant already exists'); return; }
+      const id = await dbInsertContact(S.currentUser.id, { name, note });
+      S.contacts.push({ id, name, note });
+      toast('✓ Participant added');
+    } else {
+      const contact = S.contacts[idx];
+      await dbUpdateContact(contact.id, { name, note });
+      S.contacts[idx] = { ...contact, name, note };
+      toast('✓ Participant updated');
+    }
+    closeModal('modalContact');
+    renderProfile();
+    buildQuickContacts();
+  } catch(e) { toast('✗ Failed: ' + e.message); }
 }
 
-function deleteContact(i) {
-  S.contacts.splice(i, 1);
-  saveContacts();
-  renderProfile();
-  buildQuickContacts();
-  toast('Participant removed');
+async function deleteContact(i) {
+  const contact = S.contacts[i];
+  try {
+    await dbDeleteContact(contact.id);
+    S.contacts.splice(i, 1);
+    renderProfile();
+    buildQuickContacts();
+    toast('Participant removed');
+  } catch(e) { toast('✗ Failed: ' + e.message); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2302,32 +2295,36 @@ function toast(msg) {
 // ═══════════════════════════════════════════════════════════
 // BOOT — check session on page load
 // ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  const session = getSession();
-  if (session && session.email) {
+document.addEventListener('DOMContentLoaded', async () => {
+
+  // Handle Google OAuth redirect — Supabase automatically restores the session
+  // from the URL hash; we just need to detect SIGNED_IN and boot the app.
+  dbOnAuthChange(async (session) => {
+    // Only fire when we don't have a user yet (prevents double-boot on token refresh)
+    if (session && !S.currentUser) {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('landingScreen').style.display = 'none';
+      launchApp(session);
+    }
+  });
+
+  // Normal page load — check for an existing session
+  const session = await dbGetSession();
+  if (session) {
     document.getElementById('authScreen').style.display = 'none';
-    const users = getUsers();
-    const userRecord = users[session.email];
-    if (userRecord && userRecord.mode) {
-      // Returning user with saved mode: skip landing
+    if (session.mode) {
+      // Returning user with saved mode → go straight to app
       document.getElementById('appShell').style.display = '';
-      loadFromStorage(session.email);
-      loadContacts(session.email);
+      await loadFromStorage(session.id);
+      await loadContacts(session.id);
       initApp(session);
-      if (userRecord.mode === 'business') {
-        S.businessMode = true;
-        ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
-        const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
-        const smMode = document.getElementById('sidebarMode'); if (smMode) smMode.textContent = 'Business Mode';
-        const pmBadge = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
-        const bizBtn = document.getElementById('bizBtn'); if (bizBtn) bizBtn.textContent = 'Business';
-      }
+      if (session.mode === 'business') { _applyBusinessModeUI(); }
     } else {
-      // New or mode-less user: show landing
+      // First-time or incomplete setup → show landing
       showLandingScreen(session);
     }
   }
-  // else: auth screen is already visible by default
+  // else: auth screen is visible by default
 });
 </script>
 </body>
