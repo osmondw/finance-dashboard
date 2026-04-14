@@ -25,7 +25,7 @@
 // ── CONFIG ──────────────────────────────────────────────────
 // ⚠  Replace both values with your own project credentials
 const SUPABASE_URL      = 'https://wenjrfbevgbfwrpfzotd.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_NwUT-lVMWG4sns1Ol27CJw_r1jg2uuM';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlbmpyZmJldmdiZndycGZ6b3RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzY3OTEsImV4cCI6MjA5MTcxMjc5MX0.1D-WEx7FgRyyIwgtVle1iOzT5qlnBYM4dgCqMdrfWP4';
 
 
 // ── CLIENT ──────────────────────────────────────────────────
