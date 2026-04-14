@@ -16,7 +16,7 @@
 //   CLIENT      — Supabase instance
 //   AUTH        — sign-up, sign-in, sign-out, session
 //   PROFILE     — user preferences (mode, notif)
-//   TRANSACTIONS — financial records
+//   TRANSACTIONS — financial recordsgit 
 //   CONTACTS    — split-bill participants
 //   SCHEMA      — SQL to paste into Supabase SQL Editor
 // ═══════════════════════════════════════════════════════════
