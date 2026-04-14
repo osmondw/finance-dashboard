@@ -24,8 +24,8 @@
 
 // ── CONFIG ──────────────────────────────────────────────────
 // ⚠  Replace both values with your own project credentials
-const SUPABASE_URL      = 'https://your-project-id.supabase.co';
-const SUPABASE_ANON_KEY = 'your-anon-public-key';
+const SUPABASE_URL      = 'https://wenjrfbevgbfwrpfzotd.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_NwUT-lVMWG4sns1Ol27CJw_r1jg2uuM';
 
 
 // ── CLIENT ──────────────────────────────────────────────────
