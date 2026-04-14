@@ -919,6 +919,21 @@ tailwind.config = {
   </div>
 </div>
 
+<div class="modal-overlay" id="modalContact">
+  <div class="modal-sheet">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+      <h3 style="font-size:17px;font-weight:700;" id="contactModalTitle">Add Participant</h3>
+      <button onclick="closeModal('modalContact')" style="width:32px;height:32px;border-radius:50%;background:#f0fffe;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="font-size:18px;">close</span></button>
+    </div>
+    <input type="hidden" id="contactEditIdx" value="-1"/>
+    <label class="field-label">Full Name</label>
+    <input class="fa-input" id="contactNameInput" type="text" placeholder="e.g. Budi Santoso" style="margin-bottom:12px;"/>
+    <label class="field-label">Note <span style="font-weight:400;text-transform:none;font-size:11px;color:#6e7979;">— optional</span></label>
+    <input class="fa-input" id="contactNoteInput" type="text" placeholder="e.g. Roommate, Colleague..." style="margin-bottom:1.25rem;"/>
+    <button onclick="saveContact()" class="btn-primary">Save Participant <span class="material-symbols-outlined">check</span></button>
+  </div>
+</div>
+
 <!-- NOTIFICATION POPUP -->
 <div class="notif-popup-overlay" id="notifPopup" onclick="dismissNotifPopup(event)">
   <div class="notif-popup">
@@ -1287,6 +1302,18 @@ tailwind.config = {
           <span class="badge" style="background:#ffdad6;color:#ba1a1a;margin-top:4px;" id="profileNotifBadge">Notif Off</span>
         </div>
         <div class="three-col" style="margin-bottom:1.25rem;" id="profileStats"></div>
+
+        <!-- ── PARTICIPANTS MANAGEMENT ── -->
+        <div style="margin-bottom:1.25rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <p style="font-weight:700;font-size:15px;">My Participants</p>
+            <button onclick="openAddContact()" style="display:flex;align-items:center;gap:4px;background:#006565;color:white;border:none;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+              <span class="material-symbols-outlined" style="font-size:16px;">person_add</span> Add
+            </button>
+          </div>
+          <div id="contactsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+
         <div style="display:flex;flex-direction:column;gap:8px;">
           <div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleBusinessMode()">
             <div style="display:flex;align-items:center;gap:10px;">
@@ -1502,13 +1529,14 @@ function handleRegister() {
 
   const session = { email, name };
   saveSession(session);
-  launchApp(session);
+  launchApp(session, true); // new user → show landing screen
 }
 
 function authLogout() {
   localStorage.removeItem('mong_session');
   // Reset app state
   S.transactions = [];
+  S.contacts = [];
   S.page = 'home';
   S.businessMode = false;
   S.currentUser = null;
@@ -1528,14 +1556,34 @@ function authLogout() {
   toast('👋 Signed out successfully');
 }
 
-function launchApp(session) {
+function launchApp(session, isNewUser = false) {
   // Animate auth screen out
   const authEl = document.getElementById('authScreen');
   authEl.classList.add('hiding');
   setTimeout(() => { authEl.style.display = 'none'; }, 400);
 
-  // Show landing/mode selection screen
-  showLandingScreen(session);
+  // Only show landing screen for new users (no saved mode yet)
+  const users = getUsers();
+  const userRecord = users[session.email];
+  if (isNewUser || !userRecord || !userRecord.mode) {
+    showLandingScreen(session);
+  } else {
+    // Returning user: go straight to app with saved mode
+    setTimeout(() => {
+      document.getElementById('appShell').style.display = '';
+      loadFromStorage(session.email);
+      loadContacts(session.email);
+      initApp(session);
+      if (userRecord.mode === 'business') {
+        S.businessMode = true;
+        ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
+        const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
+        const smMode = document.getElementById('sidebarMode'); if (smMode) smMode.textContent = 'Business Mode';
+        const pmBadge = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
+        const bizBtn = document.getElementById('bizBtn'); if (bizBtn) bizBtn.textContent = 'Business';
+      }
+    }, 420);
+  }
 }
 
 // ── LANDING SCREEN LOGIC ──
@@ -1564,10 +1612,18 @@ function confirmMode() {
   landingEl.classList.add('hiding');
   setTimeout(() => { landingEl.style.display = 'none'; landingEl.classList.remove('hiding'); }, 400);
 
+  // Save mode preference to user record so landing won't show again
+  const users = getUsers();
+  if (_pendingSession && users[_pendingSession.email]) {
+    users[_pendingSession.email].mode = _selectedMode;
+    saveUsers(users);
+  }
+
   // Apply mode selection and launch app
   const session = _pendingSession;
   document.getElementById('appShell').style.display = '';
   loadFromStorage(session.email);
+  loadContacts(session.email);
   initApp(session);
 
   // Apply business mode if selected
@@ -1599,6 +1655,7 @@ const S = {
   items: [],
   transactions: [],
   currentUser: null,
+  contacts: [],
 };
 
 const CAT_ICONS = {
@@ -1622,6 +1679,16 @@ function saveToStorage() {
 function loadFromStorage(email) {
   const saved = localStorage.getItem(storageKey(email));
   S.transactions = saved ? JSON.parse(saved) : [];
+}
+
+function saveContacts() {
+  if (!S.currentUser) return;
+  localStorage.setItem('mong_contacts_' + S.currentUser.email, JSON.stringify(S.contacts));
+}
+
+function loadContacts(email) {
+  const saved = localStorage.getItem('mong_contacts_' + email);
+  S.contacts = saved ? JSON.parse(saved) : [];
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1803,13 +1870,16 @@ function addPerson(name) {
 function buildQuickContacts() {
   const c = document.getElementById('quickContacts');
   c.innerHTML = '';
-  QUICK_CONTACTS.forEach(name => {
+  S.contacts.forEach(contact => {
     const div = document.createElement('div');
     div.style.cssText='flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;';
-    div.innerHTML=`<div style="width:44px;height:44px;border-radius:12px;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#006565;">${initials(name)}</div><span style="font-size:11px;font-weight:600;">${name}</span>`;
-    div.onclick = () => { addPerson(name); closeModal('modalAddPerson'); };
+    div.innerHTML=`<div style="width:44px;height:44px;border-radius:12px;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#006565;">${initials(contact.name)}</div><span style="font-size:11px;font-weight:600;">${contact.name}</span>`;
+    div.onclick = () => { addPerson(contact.name); closeModal('modalAddPerson'); };
     c.appendChild(div);
   });
+  if (!S.contacts.length) {
+    c.innerHTML = '<p style="font-size:12px;color:#6e7979;">No saved contacts yet. Add them in Profile.</p>';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2108,9 +2178,83 @@ function renderProfile() {
   const splitCount=S.transactions.filter(t=>t.desc.startsWith('Split:')).length;
   document.getElementById('profileStats').innerHTML=`
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${splitCount}</p><p style="font-size:11px;color:#6e7979;">Split Bills</p></div>
-    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">5</p><p style="font-size:11px;color:#6e7979;">Active Friends</p></div>
+    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${S.contacts.length}</p><p style="font-size:11px;color:#6e7979;">Participants</p></div>
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${S.transactions.length}</p><p style="font-size:11px;color:#6e7979;">Transactions</p></div>
   `;
+  renderContactsList();
+}
+
+function renderContactsList() {
+  const el = document.getElementById('contactsList');
+  if (!el) return;
+  el.innerHTML = '';
+  if (!S.contacts.length) {
+    el.innerHTML = '<p style="font-size:13px;color:#6e7979;padding:4px 0;">No participants yet. Add people you split bills with regularly.</p>';
+    return;
+  }
+  S.contacts.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'stat-card';
+    row.style.cssText = 'display:flex;align-items:center;gap:12px;';
+    row.innerHTML = `
+      <div style="width:40px;height:40px;border-radius:50%;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#006565;flex-shrink:0;">${initials(c.name)}</div>
+      <div style="flex:1;">
+        <p style="font-weight:600;font-size:14px;">${c.name}</p>
+        ${c.note ? `<p style="font-size:12px;color:#6e7979;">${c.note}</p>` : ''}
+      </div>
+      <button onclick="openEditContact(${i})" style="width:32px;height:32px;border-radius:50%;background:#f0fffe;border:1.5px solid #c6e9e9;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Edit">
+        <span class="material-symbols-outlined" style="font-size:16px;color:#006565;">edit</span>
+      </button>
+      <button onclick="deleteContact(${i})" style="width:32px;height:32px;border-radius:50%;background:#ffdad6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Delete">
+        <span class="material-symbols-outlined" style="font-size:16px;color:#ba1a1a;">delete</span>
+      </button>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function openAddContact() {
+  document.getElementById('contactModalTitle').textContent = 'Add Participant';
+  document.getElementById('contactNameInput').value = '';
+  document.getElementById('contactNoteInput').value = '';
+  document.getElementById('contactEditIdx').value = '-1';
+  openModal('modalContact');
+}
+
+function openEditContact(i) {
+  const c = S.contacts[i];
+  document.getElementById('contactModalTitle').textContent = 'Edit Participant';
+  document.getElementById('contactNameInput').value = c.name;
+  document.getElementById('contactNoteInput').value = c.note || '';
+  document.getElementById('contactEditIdx').value = i;
+  openModal('modalContact');
+}
+
+function saveContact() {
+  const name = document.getElementById('contactNameInput').value.trim();
+  if (!name) { toast('⚠ Enter a name'); return; }
+  const note = document.getElementById('contactNoteInput').value.trim();
+  const idx  = parseInt(document.getElementById('contactEditIdx').value);
+  if (idx === -1) {
+    if (S.contacts.find(c => c.name.toLowerCase() === name.toLowerCase())) { toast('⚠ Participant already exists'); return; }
+    S.contacts.push({ name, note });
+    toast('✓ Participant added');
+  } else {
+    S.contacts[idx] = { name, note };
+    toast('✓ Participant updated');
+  }
+  saveContacts();
+  closeModal('modalContact');
+  renderProfile();
+  buildQuickContacts();
+}
+
+function deleteContact(i) {
+  S.contacts.splice(i, 1);
+  saveContacts();
+  renderProfile();
+  buildQuickContacts();
+  toast('Participant removed');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2161,9 +2305,27 @@ function toast(msg) {
 document.addEventListener('DOMContentLoaded', () => {
   const session = getSession();
   if (session && session.email) {
-    // Already logged in — skip auth screen, show landing screen for mode selection
     document.getElementById('authScreen').style.display = 'none';
-    showLandingScreen(session);
+    const users = getUsers();
+    const userRecord = users[session.email];
+    if (userRecord && userRecord.mode) {
+      // Returning user with saved mode: skip landing
+      document.getElementById('appShell').style.display = '';
+      loadFromStorage(session.email);
+      loadContacts(session.email);
+      initApp(session);
+      if (userRecord.mode === 'business') {
+        S.businessMode = true;
+        ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
+        const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
+        const smMode = document.getElementById('sidebarMode'); if (smMode) smMode.textContent = 'Business Mode';
+        const pmBadge = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
+        const bizBtn = document.getElementById('bizBtn'); if (bizBtn) bizBtn.textContent = 'Business';
+      }
+    } else {
+      // New or mode-less user: show landing
+      showLandingScreen(session);
+    }
   }
   // else: auth screen is already visible by default
 });
