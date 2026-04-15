@@ -2107,7 +2107,7 @@ function renderProfile() {
   const splitCount=S.transactions.filter(t=>t.desc.startsWith('Split:')).length;
   document.getElementById('profileStats').innerHTML=`
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${splitCount}</p><p style="font-size:11px;color:#6e7979;">Split Bills</p></div>
-    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">5</p><p style="font-size:11px;color:#6e7979;">Active Friends</p></div>
+    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">1</p><p style="font-size:11px;color:#6e7979;">Active Friends</p></div>
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${S.transactions.length}</p><p style="font-size:11px;color:#6e7979;">Transactions</p></div>
   `;
 }
