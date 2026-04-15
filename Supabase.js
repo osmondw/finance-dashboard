@@ -31,93 +31,106 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // ── CLIENT ──────────────────────────────────────────────────
 // Relies on the Supabase CDN script loaded before this file in index.html:
 //   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-const { createClient } = window.supabase;
-const _db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-
+let _db = null;
+function _client() {
+  if (!_db) {
+    if (!window.supabase) {
+      throw new Error(
+        'Supabase SDK not loaded. Make sure the CDN <script> tag appears ' +
+        'BEFORE <script src="supabase.js"> in index.html.'
+      );
+    }
+    _db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return _db;
+}
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // AUTH
 // ════════════════════════════════════════════════════════════
-
+ 
 /**
  * Register a new user.
  * Creates a Supabase Auth account + a matching profiles row.
  * @returns {{ id, email, name, mode: null }}
  */
 async function dbSignUp(name, email, password) {
-  const { data, error } = await _db.auth.signUp({
+  const { data, error } = await _client().auth.signUp({
     email,
     password,
-    options: { data: { name } }          // stored in auth.users.raw_user_meta_data
+    options: { data: { name } }   // stored in auth.users.raw_user_meta_data
   });
   if (error) throw error;
-
-  // Insert profile row (mode is null until the user picks one on the landing screen)
-  await _db.from('profiles').insert({
-    id:             data.user.id,
+ 
+  // Insert profile row (mode null until user picks one on landing screen)
+  const { error: profileErr } = await _client().from('profiles').insert({
+    id:            data.user.id,
     name,
-    mode:           null,
-    notif_enabled:  true
+    mode:          null,
+    notif_enabled: true
   });
-
+  // Ignore duplicate key — can happen if a DB trigger already created the row
+  if (profileErr && !profileErr.message.includes('duplicate')) throw profileErr;
+ 
   return { id: data.user.id, email, name, mode: null };
 }
-
+ 
 /**
  * Sign in with email + password.
  * @returns {{ id, email, name, mode }}
  */
 async function dbSignIn(email, password) {
-  const { data, error } = await _db.auth.signInWithPassword({ email, password });
+  const { data, error } = await _client().auth.signInWithPassword({ email, password });
   if (error) throw error;
   const profile = await dbGetProfile(data.user.id);
   return _buildSession(data.user, profile);
 }
-
+ 
 /**
  * Trigger Google OAuth redirect.
- * The user will return to the same page; onAuthStateChange handles the session.
+ * The user returns to the same page; dbOnAuthChange picks up the session.
  */
 async function dbSignInWithGoogle() {
-  const { error } = await _db.auth.signInWithOAuth({
+  const { error } = await _client().auth.signInWithOAuth({
     provider: 'google',
     options:  { redirectTo: window.location.href }
   });
   if (error) throw error;
 }
-
+ 
 /**
  * Sign out the current user.
  */
 async function dbSignOut() {
-  const { error } = await _db.auth.signOut();
+  const { error } = await _client().auth.signOut();
   if (error) throw error;
 }
-
+ 
 /**
- * Return the active session (survives page reload) or null if not logged in.
+ * Return the active session (survives page reload) or null.
  * @returns {{ id, email, name, mode } | null}
  */
 async function dbGetSession() {
-  const { data: { session } } = await _db.auth.getSession();
+  const { data: { session } } = await _client().auth.getSession();
   if (!session) return null;
   const profile = await dbGetProfile(session.user.id);
   return _buildSession(session.user, profile);
 }
-
+ 
 /**
- * Listen for auth changes (OAuth redirects, token refresh, sign-out).
- * Pass a callback(session | null) — session is the same shape as dbGetSession.
+ * Listen for auth state changes (OAuth redirects, token refresh, sign-out).
+ * callback receives a session object or null.
  */
 function dbOnAuthChange(callback) {
-  _db.auth.onAuthStateChange(async (event, session) => {
+  _client().auth.onAuthStateChange(async (event, session) => {
     if (!session) { callback(null); return; }
     const profile = await dbGetProfile(session.user.id);
     callback(_buildSession(session.user, profile));
   });
 }
-
-/** Internal helper — shapes a Supabase user + profile row into our session object */
+ 
+/** Internal — shapes Supabase user + profile row into our session object */
 function _buildSession(user, profile) {
   return {
     id:    user.id,
@@ -126,47 +139,47 @@ function _buildSession(user, profile) {
     mode:  profile?.mode || null
   };
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // PROFILE
 // ════════════════════════════════════════════════════════════
-
+ 
 /**
  * Fetch a user's profile row.
  * @returns {Object | null}
  */
 async function dbGetProfile(userId) {
-  const { data } = await _db
+  const { data } = await _client()
     .from('profiles')
     .select('*')
     .eq('id', userId)
-    .maybeSingle();       // returns null instead of error when row doesn't exist
+    .maybeSingle();   // returns null (not an error) when row doesn't exist
   return data;
 }
-
+ 
 /**
  * Create or update a user's profile.
  * Pass only the fields you want to change, e.g. { mode: 'business' }
  */
 async function dbSaveProfile(userId, updates) {
-  const { error } = await _db
+  const { error } = await _client()
     .from('profiles')
     .upsert({ id: userId, ...updates }, { onConflict: 'id' });
   if (error) throw error;
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // TRANSACTIONS
 // ════════════════════════════════════════════════════════════
-
+ 
 /**
  * Load all transactions for a user, newest first.
  * @returns {Array<{ id, type, cat, desc, amount, date }>}
  */
 async function dbLoadTransactions(userId) {
-  const { data, error } = await _db
+  const { data, error } = await _client()
     .from('transactions')
     .select('*')
     .eq('user_id', userId)
@@ -175,7 +188,7 @@ async function dbLoadTransactions(userId) {
   if (error) throw error;
   return (data || []).map(_rowToTx);
 }
-
+ 
 /**
  * Insert a single transaction and return its new UUID.
  * @param {string} userId
@@ -183,7 +196,7 @@ async function dbLoadTransactions(userId) {
  * @returns {string} new row id
  */
 async function dbInsertTransaction(userId, tx) {
-  const { data, error } = await _db
+  const { data, error } = await _client()
     .from('transactions')
     .insert({
       user_id:     userId,
@@ -198,18 +211,18 @@ async function dbInsertTransaction(userId, tx) {
   if (error) throw error;
   return data.id;
 }
-
+ 
 /**
  * Permanently delete a transaction by its UUID.
  */
 async function dbDeleteTransaction(txId) {
-  const { error } = await _db
+  const { error } = await _client()
     .from('transactions')
     .delete()
     .eq('id', txId);
   if (error) throw error;
 }
-
+ 
 /** Internal mapper — DB row → app object */
 function _rowToTx(row) {
   return {
@@ -221,18 +234,18 @@ function _rowToTx(row) {
     date:   row.date
   };
 }
-
-
+ 
+ 
 // ════════════════════════════════════════════════════════════
 // CONTACTS
 // ════════════════════════════════════════════════════════════
-
+ 
 /**
- * Load all saved contacts for a user, sorted A–Z.
+ * Load all saved contacts for a user, sorted A-Z.
  * @returns {Array<{ id, name, note }>}
  */
 async function dbLoadContacts(userId) {
-  const { data, error } = await _db
+  const { data, error } = await _client()
     .from('contacts')
     .select('*')
     .eq('user_id', userId)
@@ -244,13 +257,13 @@ async function dbLoadContacts(userId) {
     note: row.note || ''
   }));
 }
-
+ 
 /**
  * Insert a new contact and return its UUID.
  * @returns {string} new row id
  */
 async function dbInsertContact(userId, contact) {
-  const { data, error } = await _db
+  const { data, error } = await _client()
     .from('contacts')
     .insert({
       user_id: userId,
@@ -262,100 +275,25 @@ async function dbInsertContact(userId, contact) {
   if (error) throw error;
   return data.id;
 }
-
+ 
 /**
  * Update an existing contact's name and/or note.
  */
 async function dbUpdateContact(contactId, updates) {
-  const { error } = await _db
+  const { error } = await _client()
     .from('contacts')
     .update({ name: updates.name, note: updates.note || '' })
     .eq('id', contactId);
   if (error) throw error;
 }
-
+ 
 /**
  * Delete a contact permanently.
  */
 async function dbDeleteContact(contactId) {
-  const { error } = await _db
+  const { error } = await _client()
     .from('contacts')
     .delete()
     .eq('id', contactId);
   if (error) throw error;
 }
-
-
-// ════════════════════════════════════════════════════════════
-// SCHEMA
-// Copy everything below and paste into:
-//   Supabase Dashboard → SQL Editor → New query → Run
-// ════════════════════════════════════════════════════════════
-/*
-
--- ── PROFILES ──────────────────────────────────────────────
-create table if not exists profiles (
-  id             uuid primary key references auth.users on delete cascade,
-  name           text        not null,
-  mode           text        check (mode in ('personal', 'business')),
-  notif_enabled  boolean     not null default true,
-  created_at     timestamptz not null default now(),
-  updated_at     timestamptz not null default now()
-);
-
--- ── TRANSACTIONS ───────────────────────────────────────────
-create table if not exists transactions (
-  id          uuid        primary key default gen_random_uuid(),
-  user_id     uuid        not null references auth.users on delete cascade,
-  type        text        not null check (type in ('income', 'expense')),
-  cat         text        not null default 'Other',
-  description text        not null default '',
-  amount      numeric     not null check (amount >= 0),
-  date        date        not null,
-  created_at  timestamptz not null default now()
-);
-
-create index if not exists transactions_user_date
-  on transactions (user_id, date desc);
-
--- ── CONTACTS ───────────────────────────────────────────────
-create table if not exists contacts (
-  id         uuid        primary key default gen_random_uuid(),
-  user_id    uuid        not null references auth.users on delete cascade,
-  name       text        not null,
-  note       text        not null default '',
-  created_at timestamptz not null default now()
-);
-
-create index if not exists contacts_user_name
-  on contacts (user_id, name);
-
--- ── ROW LEVEL SECURITY ─────────────────────────────────────
--- Ensures each user can only see and edit their own data.
-
-alter table profiles     enable row level security;
-alter table transactions enable row level security;
-alter table contacts     enable row level security;
-
--- profiles
-create policy "profiles: own rows" on profiles
-  for all using (auth.uid() = id);
-
--- transactions
-create policy "transactions: own rows" on transactions
-  for all using (auth.uid() = user_id);
-
--- contacts
-create policy "contacts: own rows" on contacts
-  for all using (auth.uid() = user_id);
-
--- ── AUTO-UPDATE updated_at ─────────────────────────────────
-create or replace function update_updated_at()
-returns trigger language plpgsql as $$
-begin new.updated_at = now(); return new; end; $$;
-
-create trigger profiles_updated_at
-  before update on profiles
-  for each row execute function update_updated_at();
-
-*/
