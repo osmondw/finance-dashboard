@@ -234,7 +234,15 @@ function _rowToTx(row) {
     date:   row.date
   };
 }
- 
+async function fetchWithBackoff(url, retries = 3, delay = 1000) {
+  const response = await fetch(url);
+  if (response.status === 429 && retries > 0) {
+    // Wait for the specified delay, then double it for the next attempt
+    await new Promise(res => setTimeout(res, delay));
+    return fetchWithBackoff(url, retries - 1, delay * 2);
+  }
+  return response;
+}
  
 // ════════════════════════════════════════════════════════════
 // CONTACTS
