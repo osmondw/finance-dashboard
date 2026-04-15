@@ -919,21 +919,6 @@ tailwind.config = {
   </div>
 </div>
 
-<div class="modal-overlay" id="modalContact">
-  <div class="modal-sheet">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-      <h3 style="font-size:17px;font-weight:700;" id="contactModalTitle">Add Participant</h3>
-      <button onclick="closeModal('modalContact')" style="width:32px;height:32px;border-radius:50%;background:#f0fffe;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;"><span class="material-symbols-outlined" style="font-size:18px;">close</span></button>
-    </div>
-    <input type="hidden" id="contactEditIdx" value="-1"/>
-    <label class="field-label">Full Name</label>
-    <input class="fa-input" id="contactNameInput" type="text" placeholder="e.g. Budi Santoso" style="margin-bottom:12px;"/>
-    <label class="field-label">Note <span style="font-weight:400;text-transform:none;font-size:11px;color:#6e7979;">— optional</span></label>
-    <input class="fa-input" id="contactNoteInput" type="text" placeholder="e.g. Roommate, Colleague..." style="margin-bottom:1.25rem;"/>
-    <button onclick="saveContact()" class="btn-primary">Save Participant <span class="material-symbols-outlined">check</span></button>
-  </div>
-</div>
-
 <!-- NOTIFICATION POPUP -->
 <div class="notif-popup-overlay" id="notifPopup" onclick="dismissNotifPopup(event)">
   <div class="notif-popup">
@@ -1302,18 +1287,6 @@ tailwind.config = {
           <span class="badge" style="background:#ffdad6;color:#ba1a1a;margin-top:4px;" id="profileNotifBadge">Notif Off</span>
         </div>
         <div class="three-col" style="margin-bottom:1.25rem;" id="profileStats"></div>
-
-        <!-- ── PARTICIPANTS MANAGEMENT ── -->
-        <div style="margin-bottom:1.25rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-            <p style="font-weight:700;font-size:15px;">My Participants</p>
-            <button onclick="openAddContact()" style="display:flex;align-items:center;gap:4px;background:#006565;color:white;border:none;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
-              <span class="material-symbols-outlined" style="font-size:16px;">person_add</span> Add
-            </button>
-          </div>
-          <div id="contactsList" style="display:flex;flex-direction:column;gap:8px;"></div>
-        </div>
-
         <div style="display:flex;flex-direction:column;gap:8px;">
           <div class="stat-card" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleBusinessMode()">
             <div style="display:flex;align-items:center;gap:10px;">
@@ -1374,12 +1347,22 @@ tailwind.config = {
   </div>
 </div><!-- /app-shell -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="Supabase.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════
-// AUTH SYSTEM  (auth logic lives in supabase.js)
+// AUTH SYSTEM
 // ═══════════════════════════════════════════════════════════
+
+// Simple hash — not cryptographic, just avoids plain-text passwords in storage
+function hashPassword(pw) {
+  let h = 0;
+  for (let i = 0; i < pw.length; i++) { h = (Math.imul(31, h) + pw.charCodeAt(i)) | 0; }
+  return h.toString(36) + pw.length.toString(36) + btoa(pw.slice(0,3)).replace(/=/g,'');
+}
+
+function getUsers()    { return JSON.parse(localStorage.getItem('mong_users')  || '{}'); }
+function getSession()  { return JSON.parse(localStorage.getItem('mong_session')|| 'null'); }
+function saveUsers(u)  { localStorage.setItem('mong_users', JSON.stringify(u)); }
+function saveSession(s){ localStorage.setItem('mong_session', JSON.stringify(s)); }
 
 function switchAuthTab(tab) {
   ['signin','register'].forEach(t => {
@@ -1451,50 +1434,55 @@ function closeSocialModal(id) {
   }
 }
 
-async function handleGoogleLogin() {
-  try {
-    await dbSignInWithGoogle();
-    // Page will redirect to Google; session is picked up on return via dbOnAuthChange
-  } catch (e) {
-    toast('✗ Google sign-in failed: ' + e.message);
+function handleGoogleLogin() {
+  // Google OAuth requires a server-side redirect (client_id + redirect_uri).
+  // Since this is a self-contained file, we simulate with a demo account.
+  const demoEmail = 'google.user@gmail.com';
+  const users = getUsers();
+  if (!users[demoEmail]) {
+    users[demoEmail] = { name: 'Google User', email: demoEmail, passwordHash: '', provider: 'google', createdAt: new Date().toISOString() };
+    saveUsers(users);
   }
+  const session = { email: demoEmail, name: users[demoEmail].name };
+  saveSession(session);
+  toast('🔑 Signed in with Google (demo)');
+  launchApp(session);
 }
 
-async function handleEmailModalLogin() {
+function handleEmailModalLogin() {
   const email = document.getElementById('emailModalEmail').value.trim().toLowerCase();
   const pw    = document.getElementById('emailModalPassword').value;
   document.getElementById('emailModalError').classList.remove('show');
 
   if (!email || !pw) { showAuthError('emailModalError', 'Please fill in all fields.'); return; }
 
-  try {
-    const session = await dbSignIn(email, pw);
-    closeSocialModal('emailLoginModal');
-    launchApp(session);
-  } catch (e) {
-    showAuthError('emailModalError', e.message || 'Sign-in failed. Check your credentials.');
-  }
+  const users = getUsers();
+  if (!users[email]) { showAuthError('emailModalError', 'No account found with this email.'); return; }
+  if (users[email].passwordHash !== hashPassword(pw)) { showAuthError('emailModalError', 'Incorrect password. Please try again.'); return; }
+
+  closeSocialModal('emailLoginModal');
+  const session = { email, name: users[email].name };
+  saveSession(session);
+  launchApp(session);
 }
 
-async function handleSignIn() {
+function handleSignIn() {
   const email = document.getElementById('signinEmail').value.trim().toLowerCase();
   const pw    = document.getElementById('signinPassword').value;
   document.getElementById('signinError').classList.remove('show');
 
   if (!email || !pw) { showAuthError('signinError', 'Please fill in all fields.'); return; }
 
-  const btn = document.querySelector('#viewSignIn .btn-auth');
-  btn.disabled = true; btn.textContent = 'Signing in…';
-  try {
-    const session = await dbSignIn(email, pw);
-    launchApp(session);
-  } catch (e) {
-    showAuthError('signinError', e.message || 'Sign-in failed. Check your credentials.');
-    btn.disabled = false; btn.textContent = 'Login';
-  }
+  const users = getUsers();
+  if (!users[email]) { showAuthError('signinError', 'No account found with this email.'); return; }
+  if (users[email].passwordHash !== hashPassword(pw)) { showAuthError('signinError', 'Incorrect password. Please try again.'); return; }
+
+  const session = { email, name: users[email].name };
+  saveSession(session);
+  launchApp(session);
 }
 
-async function handleRegister() {
+function handleRegister() {
   const name    = document.getElementById('regName').value.trim();
   const email   = document.getElementById('regEmail').value.trim().toLowerCase();
   const pw      = document.getElementById('regPassword').value;
@@ -1506,22 +1494,21 @@ async function handleRegister() {
   if (pw.length < 6) { showAuthError('registerError', 'Password must be at least 6 characters.'); return; }
   if (pw !== confirm) { showAuthError('registerError', 'Passwords do not match.'); return; }
 
-  const btn = document.querySelector('#viewRegister .btn-auth');
-  btn.disabled = true; btn.textContent = 'Creating account…';
-  try {
-    const session = await dbSignUp(name, email, pw);
-    launchApp(session, true); // new user → show landing screen
-  } catch (e) {
-    showAuthError('registerError', e.message || 'Registration failed. Please try again.');
-    btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;">person_add</span> Create Account';
-  }
+  const users = getUsers();
+  if (users[email]) { showAuthError('registerError', 'An account with this email already exists.'); return; }
+
+  users[email] = { name, email, passwordHash: hashPassword(pw), createdAt: new Date().toISOString() };
+  saveUsers(users);
+
+  const session = { email, name };
+  saveSession(session);
+  launchApp(session);
 }
 
-async function authLogout() {
-  try { await dbSignOut(); } catch (_) {}
+function authLogout() {
+  localStorage.removeItem('mong_session');
   // Reset app state
   S.transactions = [];
-  S.contacts = [];
   S.page = 'home';
   S.businessMode = false;
   S.currentUser = null;
@@ -1541,25 +1528,14 @@ async function authLogout() {
   toast('👋 Signed out successfully');
 }
 
-function launchApp(session, isNewUser = false) {
+function launchApp(session) {
   // Animate auth screen out
   const authEl = document.getElementById('authScreen');
   authEl.classList.add('hiding');
   setTimeout(() => { authEl.style.display = 'none'; }, 400);
 
-  // session.mode is null for brand-new users (no profile mode saved yet)
-  if (isNewUser || !session.mode) {
-    showLandingScreen(session);
-  } else {
-    // Returning user: skip landing, load data, go straight to app
-    setTimeout(async () => {
-      document.getElementById('appShell').style.display = '';
-      await loadFromStorage(session.id);
-      await loadContacts(session.id);
-      initApp(session);
-      if (session.mode === 'business') { _applyBusinessModeUI(); }
-    }, 420);
-  }
+  // Show landing/mode selection screen
+  showLandingScreen(session);
 }
 
 // ── LANDING SCREEN LOGIC ──
@@ -1583,26 +1559,26 @@ function selectMode(mode) {
   document.getElementById('modeCardBusiness').classList.toggle('selected', mode === 'business');
 }
 
-async function confirmMode() {
+function confirmMode() {
   const landingEl = document.getElementById('landingScreen');
   landingEl.classList.add('hiding');
   setTimeout(() => { landingEl.style.display = 'none'; landingEl.classList.remove('hiding'); }, 400);
 
-  // Persist mode so landing won't show again on next login
-  try {
-    await dbSaveProfile(_pendingSession.id, { mode: _selectedMode, name: _pendingSession.name });
-    _pendingSession.mode = _selectedMode;
-  } catch (e) {
-    toast('⚠ Could not save preference — continuing anyway');
-  }
-
+  // Apply mode selection and launch app
   const session = _pendingSession;
   document.getElementById('appShell').style.display = '';
-  await loadFromStorage(session.id);
-  await loadContacts(session.id);
+  loadFromStorage(session.email);
   initApp(session);
 
-  if (_selectedMode === 'business') { _applyBusinessModeUI(); }
+  // Apply business mode if selected
+  if (_selectedMode === 'business') {
+    S.businessMode = true;
+    ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
+    const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
+    const smMode = document.getElementById('sidebarMode'); if (smMode) smMode.textContent = 'Business Mode';
+    const pmBadge = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
+    const bizBtn = document.getElementById('bizBtn'); if (bizBtn) bizBtn.textContent = 'Business';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1623,7 +1599,6 @@ const S = {
   items: [],
   transactions: [],
   currentUser: null,
-  contacts: [],
 };
 
 const CAT_ICONS = {
@@ -1637,36 +1612,16 @@ const pageTitles = { home:'Home', split:'Split Bill', add:'Add Transaction', rep
 // ═══════════════════════════════════════════════════════════
 // STORAGE (per-user)
 // ═══════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════
-// STORAGE  (thin wrappers that keep the rest of the app tidy)
-// ═══════════════════════════════════════════════════════════
+function storageKey(email) { return 'mong_tx_' + (email || 'guest'); }
 
-async function loadFromStorage(userId) {
-  try   { S.transactions = await dbLoadTransactions(userId); }
-  catch (e) { console.error('loadTransactions:', e); S.transactions = []; }
+function saveToStorage() {
+  if (!S.currentUser) return;
+  localStorage.setItem(storageKey(S.currentUser.email), JSON.stringify(S.transactions));
 }
 
-// saveToStorage() is no longer used for bulk saves — individual inserts happen
-// in saveTransaction() and confirmSplit() instead. Kept as a no-op so any
-// stray calls don't break anything.
-function saveToStorage() {}
-
-async function loadContacts(userId) {
-  try   { S.contacts = await dbLoadContacts(userId); }
-  catch (e) { console.error('loadContacts:', e); S.contacts = []; }
-}
-
-// saveContacts() replaced by per-operation DB calls (insert/update/delete).
-function saveContacts() {}
-
-// Shared helper — applies business-mode UI after login or mode switch
-function _applyBusinessModeUI() {
-  S.businessMode = true;
-  ['bizToggleDesk','bizToggleMob'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.add('on'); });
-  const bmStatus = document.getElementById('bizModeStatus'); if (bmStatus) bmStatus.textContent = 'Active';
-  const smMode   = document.getElementById('sidebarMode');   if (smMode)   smMode.textContent   = 'Business Mode';
-  const pmBadge  = document.getElementById('profileModeBadge'); if (pmBadge) pmBadge.textContent = 'Business';
-  const bizBtn   = document.getElementById('bizBtn');         if (bizBtn)   bizBtn.textContent   = 'Business';
+function loadFromStorage(email) {
+  const saved = localStorage.getItem(storageKey(email));
+  S.transactions = saved ? JSON.parse(saved) : [];
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1848,16 +1803,13 @@ function addPerson(name) {
 function buildQuickContacts() {
   const c = document.getElementById('quickContacts');
   c.innerHTML = '';
-  S.contacts.forEach(contact => {
+  QUICK_CONTACTS.forEach(name => {
     const div = document.createElement('div');
     div.style.cssText='flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;';
-    div.innerHTML=`<div style="width:44px;height:44px;border-radius:12px;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#006565;">${initials(contact.name)}</div><span style="font-size:11px;font-weight:600;">${contact.name}</span>`;
-    div.onclick = () => { addPerson(contact.name); closeModal('modalAddPerson'); };
+    div.innerHTML=`<div style="width:44px;height:44px;border-radius:12px;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#006565;">${initials(name)}</div><span style="font-size:11px;font-weight:600;">${name}</span>`;
+    div.onclick = () => { addPerson(name); closeModal('modalAddPerson'); };
     c.appendChild(div);
   });
-  if (!S.contacts.length) {
-    c.innerHTML = '<p style="font-size:12px;color:#6e7979;">No saved contacts yet. Add them in Profile.</p>';
-  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2039,16 +1991,12 @@ function submitItem() {
   closeModal('modalAddItem'); renderItemList();
 }
 
-async function confirmSplit() {
+function confirmSplit() {
   const desc=document.getElementById('billDesc')?.value||'Group Bill';
-  const tx = { type:'expense', cat:'Food', desc:`Split: ${desc}`, amount:getGrandTotal()/S.participants.length, date:today() };
-  try {
-    const id = await dbInsertTransaction(S.currentUser.id, tx);
-    tx.id = id;
-    S.transactions.unshift(tx);
-    toast('✓ Split bill saved successfully!');
-    setTimeout(()=>navigateTo('home'),1400);
-  } catch(e) { toast('✗ Save failed: ' + e.message); }
+  S.transactions.unshift({ type:'expense', cat:'Food', desc:`Split: ${desc}`, amount:getGrandTotal()/S.participants.length, date:today() });
+  saveToStorage();
+  toast('✓ Split bill saved successfully!');
+  setTimeout(()=>navigateTo('home'),1400);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2072,19 +2020,15 @@ function setTransType(t) {
   document.getElementById('btnIncome').style.background=t==='income'?'#006565':'white';
   document.getElementById('btnIncome').style.color=t==='income'?'white':'#3e4949';
 }
-async function saveTransaction() {
+function saveTransaction() {
   const el=document.getElementById('addAmount'), amt=parseFloat((el.value||'').replace(/,/g,''))||0;
   if (amt<=0) { toast('⚠ Enter an amount'); return; }
   const desc=document.getElementById('addDesc').value||(S.selectedCat||'Transaction'), date=document.getElementById('addDate').value||today();
-  const tx = { type:S.transType, cat:S.selectedCat||'Other', desc, amount:amt, date };
-  try {
-    const id = await dbInsertTransaction(S.currentUser.id, tx);
-    tx.id = id;
-    S.transactions.unshift(tx);
-    toast('✓ Transaction saved!');
-    document.getElementById('addAmount').value=''; document.getElementById('addDesc').value=''; S.selectedCat=null;
-    setTimeout(()=>navigateTo('home'),1200);
-  } catch(e) { toast('✗ Save failed: ' + e.message); }
+  S.transactions.unshift({ type:S.transType, cat:S.selectedCat||'Other', desc, amount:amt, date });
+  saveToStorage();
+  toast('✓ Transaction saved!');
+  document.getElementById('addAmount').value=''; document.getElementById('addDesc').value=''; S.selectedCat=null;
+  setTimeout(()=>navigateTo('home'),1200);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2164,90 +2108,9 @@ function renderProfile() {
   const splitCount=S.transactions.filter(t=>t.desc.startsWith('Split:')).length;
   document.getElementById('profileStats').innerHTML=`
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${splitCount}</p><p style="font-size:11px;color:#6e7979;">Split Bills</p></div>
-    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${S.contacts.length}</p><p style="font-size:11px;color:#6e7979;">Participants</p></div>
+    <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">5</p><p style="font-size:11px;color:#6e7979;">Active Friends</p></div>
     <div class="stat-card" style="text-align:center;"><p style="font-size:1.4rem;font-weight:700;color:#006565;font-family:'DM Serif Display',serif;">${S.transactions.length}</p><p style="font-size:11px;color:#6e7979;">Transactions</p></div>
   `;
-  renderContactsList();
-}
-
-function renderContactsList() {
-  const el = document.getElementById('contactsList');
-  if (!el) return;
-  el.innerHTML = '';
-  if (!S.contacts.length) {
-    el.innerHTML = '<p style="font-size:13px;color:#6e7979;padding:4px 0;">No participants yet. Add people you split bills with regularly.</p>';
-    return;
-  }
-  S.contacts.forEach((c, i) => {
-    const row = document.createElement('div');
-    row.className = 'stat-card';
-    row.style.cssText = 'display:flex;align-items:center;gap:12px;';
-    row.innerHTML = `
-      <div style="width:40px;height:40px;border-radius:50%;background:#d2f5f4;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#006565;flex-shrink:0;">${initials(c.name)}</div>
-      <div style="flex:1;">
-        <p style="font-weight:600;font-size:14px;">${c.name}</p>
-        ${c.note ? `<p style="font-size:12px;color:#6e7979;">${c.note}</p>` : ''}
-      </div>
-      <button onclick="openEditContact(${i})" style="width:32px;height:32px;border-radius:50%;background:#f0fffe;border:1.5px solid #c6e9e9;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Edit">
-        <span class="material-symbols-outlined" style="font-size:16px;color:#006565;">edit</span>
-      </button>
-      <button onclick="deleteContact(${i})" style="width:32px;height:32px;border-radius:50%;background:#ffdad6;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Delete">
-        <span class="material-symbols-outlined" style="font-size:16px;color:#ba1a1a;">delete</span>
-      </button>
-    `;
-    el.appendChild(row);
-  });
-}
-
-function openAddContact() {
-  document.getElementById('contactModalTitle').textContent = 'Add Participant';
-  document.getElementById('contactNameInput').value = '';
-  document.getElementById('contactNoteInput').value = '';
-  document.getElementById('contactEditIdx').value = '-1';
-  openModal('modalContact');
-}
-
-function openEditContact(i) {
-  const c = S.contacts[i];
-  document.getElementById('contactModalTitle').textContent = 'Edit Participant';
-  document.getElementById('contactNameInput').value = c.name;
-  document.getElementById('contactNoteInput').value = c.note || '';
-  document.getElementById('contactEditIdx').value = i;
-  openModal('modalContact');
-}
-
-async function saveContact() {
-  const name = document.getElementById('contactNameInput').value.trim();
-  if (!name) { toast('⚠ Enter a name'); return; }
-  const note = document.getElementById('contactNoteInput').value.trim();
-  const idx  = parseInt(document.getElementById('contactEditIdx').value);
-  try {
-    if (idx === -1) {
-      if (S.contacts.find(c => c.name.toLowerCase() === name.toLowerCase())) { toast('⚠ Participant already exists'); return; }
-      const id = await dbInsertContact(S.currentUser.id, { name, note });
-      S.contacts.push({ id, name, note });
-      toast('✓ Participant added');
-    } else {
-      const contact = S.contacts[idx];
-      await dbUpdateContact(contact.id, { name, note });
-      S.contacts[idx] = { ...contact, name, note };
-      toast('✓ Participant updated');
-    }
-    closeModal('modalContact');
-    renderProfile();
-    buildQuickContacts();
-  } catch(e) { toast('✗ Failed: ' + e.message); }
-}
-
-async function deleteContact(i) {
-  const contact = S.contacts[i];
-  try {
-    await dbDeleteContact(contact.id);
-    S.contacts.splice(i, 1);
-    renderProfile();
-    buildQuickContacts();
-    toast('Participant removed');
-  } catch(e) { toast('✗ Failed: ' + e.message); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2295,36 +2158,14 @@ function toast(msg) {
 // ═══════════════════════════════════════════════════════════
 // BOOT — check session on page load
 // ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', async () => {
-
-  // Handle Google OAuth redirect — Supabase automatically restores the session
-  // from the URL hash; we just need to detect SIGNED_IN and boot the app.
-  dbOnAuthChange(async (session) => {
-    // Only fire when we don't have a user yet (prevents double-boot on token refresh)
-    if (session && !S.currentUser) {
-      document.getElementById('authScreen').style.display = 'none';
-      document.getElementById('landingScreen').style.display = 'none';
-      launchApp(session);
-    }
-  });
-
-  // Normal page load — check for an existing session
-  const session = await dbGetSession();
-  if (session) {
+document.addEventListener('DOMContentLoaded', () => {
+  const session = getSession();
+  if (session && session.email) {
+    // Already logged in — skip auth screen, show landing screen for mode selection
     document.getElementById('authScreen').style.display = 'none';
-    if (session.mode) {
-      // Returning user with saved mode → go straight to app
-      document.getElementById('appShell').style.display = '';
-      await loadFromStorage(session.id);
-      await loadContacts(session.id);
-      initApp(session);
-      if (session.mode === 'business') { _applyBusinessModeUI(); }
-    } else {
-      // First-time or incomplete setup → show landing
-      showLandingScreen(session);
-    }
+    showLandingScreen(session);
   }
-  // else: auth screen is visible by default
+  // else: auth screen is already visible by default
 });
 </script>
 </body>
